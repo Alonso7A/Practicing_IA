@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso de GitHub — Web + VS Code</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- =============== SIDEBAR =============== -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Curso de GitHub</div>
+    <div class="sidebar-subtitle">Web + VS Code</div>
+    <nav>
+      <ol>
+        <li><a href="#intro">¿Qué es Git y GitHub?</a></li>
+        <li><a href="#conceptos">Conceptos clave</a></li>
+        <li><a href="#instalacion">Instalación y setup</a></li>
+        <li><a href="#flujo">Flujo de trabajo</a></li>
+        <li><a href="#estados">Estados de archivos</a></li>
+        <li><a href="#repo-web">Crear repo desde la web</a></li>
+        <li><a href="#vscode">GitHub en VS Code</a></li>
+        <li><a href="#comandos">Comandos esenciales</a></li>
+        <li><a href="#ramas">Ramas (branches)</a></li>
+        <li><a href="#pr">Pull Requests</a></li>
+        <li><a href="#estrategias">Estrategias: Flow vs GitFlow</a></li>
+        <li><a href="#seguridad">Seguridad: SSH y PAT</a></li>
+        <li><a href="#tips">Tips y buenas prácticas</a></li>
+        <li><a href="#errores">Errores comunes</a></li>
+      </ol>
+    </nav>
+    <div class="sidebar-footer">
+      Material elaborado para uso personal.<br>
+      Paleta IEEE sobria · 2026
+    </div>
+  </aside>
+
+  <!-- =============== CONTENIDO =============== -->
+  <main class="content">
+
+    <header class="hero">
+      <h1>Curso de GitHub: desde la web hasta VS Code</h1>
+      <p class="lede">Una guía completa, con teoría, comandos, diagramas y tips, para dominar el control de versiones tanto desde la interfaz web de GitHub como desde la terminal de Visual Studio Code.</p>
+      <div class="hero-meta">
+        <span>14 secciones</span>
+        <span>Diagramas interactivos</span>
+        <span>Comandos listos para copiar</span>
+        <span>Buenas prácticas 2026</span>
+      </div>
+    </header>
+
+    <!-- ============ 1. INTRO ============ -->
+    <section id="intro">
+      <h2>¿Qué es Git y qué es GitHub?</h2>
+      <p>Aunque suelen mencionarse juntos, <strong>Git</strong> y <strong>GitHub</strong> no son lo mismo. Entender la diferencia es el primer paso para no confundir conceptos.</p>
+
+      <aside class="callout callout-definicion">
+        <h4 class="callout-title">Definición</h4>
+        <p><strong>Git</strong> es un <em>sistema de control de versiones distribuido</em>: un programa que se instala en tu computadora y registra cada cambio que haces en los archivos de un proyecto, permitiéndote volver atrás, comparar versiones y trabajar en paralelo con otras personas.</p>
+        <p><strong>GitHub</strong> es una <em>plataforma en la nube</em> que aloja repositorios Git, añade colaboración (issues, pull requests, code review), respaldo, hosting de páginas, automatizaciones (Actions) y se ha convertido en el portafolio profesional estándar para desarrolladores.</p>
+      </aside>
+
+      <aside class="callout callout-resumen">
+        <h4 class="callout-title">Analogía</h4>
+        <p><strong>Git</strong> es el cuaderno donde anotas todos los cambios, quién los hizo y cuándo.</p>
+        <p><strong>GitHub</strong> es la biblioteca en internet donde guardas ese cuaderno, con mesas para reunirse, ventanas para que otros vean tu trabajo y estantes para organizar los capítulos.</p>
+      </aside>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart LR
+    A[Tu computadora<br/>📂 Proyecto local]
+    B[Git<br/>🔧 Control de versiones]
+    C[GitHub<br/>☁️ Repositorio remoto]
+    D[Colaboradores<br/>👥 Otros usuarios]
+
+    A -->|git add, commit| B
+    B -->|git push| C
+    C -->|git pull| B
+    C <-->|clonar, PRs| D
+
+    classDef local fill:#E8EEF7,stroke:#1F3A68,stroke-width:2px,color:#1F1F1F
+    classDef tool  fill:#1F3A68,stroke:#0F1F3D,stroke-width:2px,color:#FFFFFF
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+    classDef user  fill:#F5F5F5,stroke:#4A4A4A,stroke-width:1.5px,color:#1F1F1F
+    class A local
+    class B tool
+    class C cloud
+    class D user
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 1.</strong> Arquitectura básica: tu computadora con Git habla con GitHub vía push/pull.</div>
+      </div>
+    </section>
+
+    <!-- ============ 2. CONCEPTOS ============ -->
+    <section id="conceptos">
+      <h2>Conceptos clave que debes conocer</h2>
+      <p>Antes de empezar a teclear comandos, familiarízate con este vocabulario. Lo encontrarás en cada tutorial, error y conversación sobre Git.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h4>Repositorio (repo)</h4>
+          <p>La carpeta de tu proyecto, junto con todo el historial de cambios. Puede ser <em>local</em> (en tu PC) o <em>remoto</em> (en GitHub).</p>
+        </div>
+        <div class="concept-card">
+          <h4>Commit</h4>
+          <p>Una "fotografía" de tus archivos en un momento dado. Cada commit tiene un mensaje, un autor y un identificador único (hash).</p>
+        </div>
+        <div class="concept-card">
+          <h4>Branch (rama)</h4>
+          <p>Una línea paralela de desarrollo. Te permite trabajar en una funcionalidad sin afectar el código principal.</p>
+        </div>
+        <div class="concept-card">
+          <h4>Merge</h4>
+          <p>Fusionar los cambios de una rama dentro de otra. Es cómo se incorpora tu trabajo a la rama principal.</p>
+        </div>
+        <div class="concept-card">
+          <h4>Push / Pull</h4>
+          <p><code>push</code> sube tus commits al servidor remoto. <code>pull</code> descarga lo que otros subieron.</p>
+        </div>
+        <div class="concept-card">
+          <h4>Clone</h4>
+          <p>Descargar un repositorio remoto completo a tu máquina para empezar a trabajar en él.</p>
+        </div>
+        <div class="concept-card">
+          <h4>Staging area</h4>
+          <p>Zona intermedia donde colocas los archivos que quieres incluir en tu próximo commit. Se llena con <code>git add</code>.</p>
+        </div>
+        <div class="concept-card">
+          <h4>Pull Request (PR)</h4>
+          <p>Solicitud para fusionar una rama en otra. Es donde ocurre la revisión de código entre colaboradores.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. INSTALACIÓN ============ -->
+    <section id="instalacion">
+      <h2>Instalación y configuración inicial</h2>
+      <p>Para trabajar con GitHub necesitas tres cosas: una cuenta en la web, Git instalado en tu PC y un editor de código (idealmente Visual Studio Code).</p>
+
+      <h3>Paso 1 — Crear cuenta en GitHub</h3>
+      <p>Ve a <a href="https://github.com" target="_blank">github.com</a> y pulsa <strong>Sign up</strong>. Vas a necesitar correo, usuario y contraseña. Confirma tu correo desde el enlace que te envíen.</p>
+
+      <h3>Paso 2 — Instalar Visual Studio Code</h3>
+      <p>Descárgalo desde <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>. Es el editor más usado y tiene integración nativa con Git, terminal incorporada y miles de extensiones.</p>
+
+      <h3>Paso 3 — Instalar Git</h3>
+      <p>Descárgalo desde <a href="https://git-scm.com/downloads" target="_blank">git-scm.com/downloads</a>. En Windows el instalador te hace varias preguntas — la siguiente tabla resume qué elegir si eres principiante:</p>
+
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Opciones recomendadas en la instalación de Git para Windows</caption>
+        <thead>
+          <tr>
+            <th>Pantalla</th>
+            <th>Opción recomendada</th>
+            <th>Por qué</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Editor por defecto</td>
+            <td>Visual Studio Code</td>
+            <td>Vim (el default) tiene una curva de aprendizaje frustrante. VS Code es intuitivo.</td>
+          </tr>
+          <tr>
+            <td>Nombre de rama inicial</td>
+            <td>Let Git decide</td>
+            <td>Usará <code>master</code>. Es válido. Hoy se prefiere <code>main</code> pero no es obligatorio.</td>
+          </tr>
+          <tr>
+            <td>Ajuste del PATH</td>
+            <td>Git from the command line and 3rd-party software</td>
+            <td>Permite usar Git desde CMD, PowerShell y la terminal de VS Code.</td>
+          </tr>
+          <tr>
+            <td>Cliente SSH</td>
+            <td>Use bundled OpenSSH</td>
+            <td>Trae su propia versión, compatible con todo.</td>
+          </tr>
+          <tr>
+            <td>Finales de línea</td>
+            <td>Checkout Windows-style, commit Unix-style</td>
+            <td>Evita problemas al colaborar con usuarios de Mac/Linux.</td>
+          </tr>
+          <tr>
+            <td>Credential helper</td>
+            <td>Git Credential Manager</td>
+            <td>Recuerda tu usuario y contraseña para no escribirlos cada vez.</td>
+          </tr>
+          <tr>
+            <td>Opciones experimentales</td>
+            <td>Ninguna</td>
+            <td>Aún no son estables; mejor evitarlas.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Paso 4 — Configurar tu identidad en Git</h3>
+      <p>Abre la terminal en VS Code (<kbd>Ctrl</kbd>+<kbd>`</kbd>) y ejecuta:</p>
+
+      <pre class="code-block shell" data-lang="bash"><code>git config --global user.name "Tu Nombre"
+git config --global user.email "tucorreo@ejemplo.com"
+git config --list</code></pre>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Importante</h4>
+        <p>El correo que pongas en <code>user.email</code> debería ser el mismo de tu cuenta de GitHub. Si no, los commits aparecerán como "no verificados" o atribuidos a una cuenta fantasma.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 4. FLUJO ============ -->
+    <section id="flujo">
+      <h2>El flujo de trabajo básico de Git</h2>
+      <p>Cada vez que modifiques tu proyecto, repetirás este ciclo de 4 pasos. Memorízalo: <strong>edit → add → commit → push</strong>.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart LR
+    A([1. Editar<br/>archivos]):::start
+    B[2. Staging<br/><code>git add</code>]:::proc
+    C[3. Commit<br/><code>git commit -m</code>]:::proc
+    D[4. Push<br/><code>git push</code>]:::proc
+    E([Repositorio<br/>en GitHub]):::cloud
+
+    A --> B --> C --> D --> E
+    E -.->|otros colaboran| A
+
+    classDef start fill:#1F3A68,stroke:#0F1F3D,stroke-width:2px,color:#FFFFFF
+    classDef proc  fill:#E8EEF7,stroke:#1F3A68,stroke-width:1.5px,color:#1F1F1F
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 2.</strong> Ciclo básico de trabajo. Cada commit es un punto de guardado al que puedes volver.</div>
+      </div>
+
+      <h3>Cómo se ve en la terminal</h3>
+      <pre class="code-block shell" data-lang="bash"><code># Ver qué cambió
+git status
+
+# Agregar archivos al staging (todos los modificados)
+git add .
+
+# Crear un commit con un mensaje descriptivo
+git commit -m "agrega validación al formulario de login"
+
+# Subir los cambios al repositorio remoto
+git push</code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Tip de oro</h4>
+        <p>Ejecuta <code>git status</code> <strong>antes</strong> y <strong>después</strong> de cada paso. Es tu brújula: te dice qué archivos están modificados, cuáles están en staging y si hay algo por sincronizar con el remoto.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 5. ESTADOS ============ -->
+    <section id="estados">
+      <h2>Los estados de un archivo en Git</h2>
+      <p>Cada archivo de tu proyecto pasa por estos estados. Saber identificarlos te ahorra horas de confusión.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+stateDiagram-v2
+    direction LR
+    [*] --> Untracked: archivo nuevo
+    Untracked --> Staged: git add
+    Staged --> Committed: git commit
+    Committed --> Modified: editar archivo
+    Modified --> Staged: git add
+    Committed --> Pushed: git push
+    Pushed --> [*]
+    Modified --> Committed: git restore (descartar)
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 3.</strong> Ciclo de estados de un archivo: del nacimiento (untracked) a la nube (pushed).</div>
+      </div>
+
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Estados de archivos y qué los identifica</caption>
+        <thead>
+          <tr><th>Estado</th><th>Color en VS Code</th><th>Significado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Untracked</strong></td><td>U (verde)</td><td>Git ve el archivo pero no lo está siguiendo. Nunca ha sido agregado.</td></tr>
+          <tr><td><strong>Modified</strong></td><td>M (amarillo)</td><td>El archivo cambió respecto al último commit, pero aún no se ha hecho <code>add</code>.</td></tr>
+          <tr><td><strong>Staged</strong></td><td>A (verde) o ✓</td><td>El archivo está listo para ser incluido en el próximo commit.</td></tr>
+          <tr><td><strong>Committed</strong></td><td>(sin marca)</td><td>Los cambios están guardados en el historial local.</td></tr>
+          <tr><td><strong>Pushed</strong></td><td>(sin marca)</td><td>Los cambios están sincronizados con GitHub.</td></tr>
+          <tr><td><strong>Ignored</strong></td><td>(gris)</td><td>El archivo está en <code>.gitignore</code> — Git lo ignora a propósito.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 6. REPO WEB ============ -->
+    <section id="repo-web">
+      <h2>Crear un repositorio desde la web de GitHub</h2>
+      <p>Hay dos caminos: crear el repo en GitHub primero y luego clonarlo, o crearlo localmente y luego conectarlo. Empezaremos por el camino más limpio: <strong>crearlo en GitHub primero</strong>.</p>
+
+      <h3>Pasos en la interfaz web</h3>
+      <ol>
+        <li><strong>PASO 1:</strong> Inicia sesión en <a href="https://github.com" target="_blank">github.com</a>. En la esquina superior izquierda pulsa el icono de las tres rayas y selecciona <em>Repositories</em>.</li>
+        <li><strong>PASO 2:</strong> Pulsa <em>New repository</em>. Escribe un nombre (sin espacios, usa guiones) y una descripción breve. Déjalo <strong>público</strong> al inicio: facilita compartir y aprender, y GitHub Pages necesita repos públicos para hosting gratuito.</li>
+        <li><strong>PASO 3:</strong> Marca <em>Add a README file</em> para que el repo no esté vacío. Opcionalmente agrega un <em>.gitignore</em> según el lenguaje.</li>
+        <li><strong>PASO 4:</strong> Pulsa <em>Create repository</em>. GitHub te mostrará la URL del repo: cópiala.</li>
+      </ol>
+
+      <h3>Conectar tu carpeta local al repo recién creado</h3>
+      <p>Abre tu carpeta en VS Code, abre la terminal y ejecuta:</p>
+
+      <pre class="code-block shell" data-lang="bash"><code># Inicializar Git en la carpeta
+git init
+
+# Conectar al repo remoto
+git remote add origin https://github.com/tu-usuario/tu-repo.git
+
+# Bajar el README/gitignore que se creó en GitHub
+git pull origin main
+
+# Crear archivos, agregar, commit y push
+git add .
+git commit -m "primer commit local"
+git push --set-upstream origin main</code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Cuando aparece error en el primer push</h4>
+        <p>Si te sale <code>error: failed to push some refs</code>, suele ser porque el remoto tiene commits que tú no tienes localmente (el README que creaste). Solución: <code>git pull origin main --allow-unrelated-histories</code> y vuelve a hacer <code>git push</code>.</p>
+      </aside>
+
+      <h3>Crear una carpeta nueva dentro del repo desde la web</h3>
+      <p>Sí, en la interfaz web puedes crear carpetas, pero hay un truco: cuando pulsas <em>Add file → Create new file</em>, en el campo del nombre escribe:</p>
+      <pre class="code-block" data-lang="ruta"><code>mi-carpeta/archivo.md</code></pre>
+      <p>El <code>/</code> es lo que convierte <em>mi-carpeta</em> en carpeta. Luego en VS Code haz <code>git pull</code> para que aparezca localmente.</p>
+    </section>
+
+    <!-- ============ 7. VS CODE ============ -->
+    <section id="vscode">
+      <h2>GitHub desde Visual Studio Code</h2>
+      <p>VS Code tiene integración nativa con Git. No <strong>necesitas</strong> usar la terminal — todo se puede hacer con clics — pero combinar ambos te hace más rápido y entiendes lo que pasa por debajo.</p>
+
+      <h3>El panel de control de código (Source Control)</h3>
+      <p>Se abre con <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> o pulsando el icono con forma de rama en la barra lateral izquierda. Verás:</p>
+
+      <ul>
+        <li><strong>Changes:</strong> archivos modificados que aún no están en staging</li>
+        <li><strong>Staged Changes:</strong> archivos listos para commitear</li>
+        <li><strong>Caja de mensaje:</strong> donde escribes el mensaje del commit</li>
+        <li><strong>Botón ✓ Commit:</strong> equivalente a <code>git commit</code></li>
+      </ul>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart TD
+    A[📂 Editor de archivos]:::edit
+    B[🔀 Source Control]:::vc
+    C[➕ Stage Changes]:::action
+    D[💬 Mensaje commit]:::action
+    E[✓ Commit]:::action
+    F[☁️ Sync / Push]:::cloud
+
+    A -->|editas| B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+
+    classDef edit fill:#F5F5F5,stroke:#4A4A4A,color:#1F1F1F
+    classDef vc fill:#E8EEF7,stroke:#1F3A68,stroke-width:2px,color:#1F1F1F
+    classDef action fill:#1F3A68,stroke:#0F1F3D,color:#FFFFFF
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 4.</strong> Flujo gráfico equivalente al ciclo de comandos en la terminal de VS Code.</div>
+      </div>
+
+      <h3>Atajos de teclado útiles</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Atajos esenciales para Git en VS Code</caption>
+        <thead><tr><th>Atajo</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></td><td>Abrir panel de Source Control</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>`</kbd></td><td>Abrir/cerrar terminal integrada</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></td><td>Paleta de comandos (escribir "Git:" lista todas las acciones)</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Confirmar commit (con el panel de Source Control activo)</td></tr>
+          <tr><td>Clic en nombre de rama (abajo izq.)</td><td>Cambiar de rama o crear una nueva</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Extensiones imprescindibles</h3>
+      <ul>
+        <li><strong>GitHub Pull Requests and Issues</strong> — gestiona PRs sin salir de VS Code</li>
+        <li><strong>GitLens</strong> — muestra quién escribió cada línea (<em>blame</em>) y la historia de cada cambio</li>
+        <li><strong>Git Graph</strong> — visualización del historial como árbol</li>
+        <li><strong>Git History</strong> — explora commits y diferencias</li>
+      </ul>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Tip</h4>
+        <p>Cuando hagas <em>Commit</em> sin nada en staging, VS Code te pregunta si quiere hacer <em>stage all</em>. Si dices que sí, equivale a <code>git add .</code> seguido de <code>git commit</code>. Útil pero peligroso si tienes archivos que no querías incluir — siempre revisa el panel antes.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 8. COMANDOS ============ -->
+    <section id="comandos">
+      <h2>Comandos esenciales de Git</h2>
+      <p>Aquí están organizados por categoría. No los memorices todos: usa los básicos a diario y consulta los demás cuando los necesites.</p>
+
+      <h3>Configuración inicial</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><code>git config --global user.name "nombre"</code></td><td>Configura tu nombre de usuario</td></tr>
+          <tr><td><code>git config --global user.email "email"</code></td><td>Configura tu correo</td></tr>
+          <tr><td><code>git config --list</code></td><td>Muestra la configuración actual</td></tr>
+          <tr><td><code>git config --global init.defaultBranch main</code></td><td>Hace que los repos nuevos usen <code>main</code> en lugar de <code>master</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Comandos básicos del día a día</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><code>git init</code></td><td>Inicializa un repositorio Git en la carpeta actual</td></tr>
+          <tr><td><code>git clone [url]</code></td><td>Descarga un repo remoto completo</td></tr>
+          <tr><td><code>git status</code></td><td>Estado actual: archivos modificados, en staging, sin trackear</td></tr>
+          <tr><td><code>git add [archivo]</code></td><td>Agrega un archivo al staging</td></tr>
+          <tr><td><code>git add .</code></td><td>Agrega todos los archivos modificados</td></tr>
+          <tr><td><code>git commit -m "mensaje"</code></td><td>Crea un commit con los archivos en staging</td></tr>
+          <tr><td><code>git log</code></td><td>Historial completo de commits</td></tr>
+          <tr><td><code>git log --oneline --graph</code></td><td>Historial visual compacto, mostrando ramas</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Sincronización con GitHub</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><code>git remote add origin [url]</code></td><td>Conecta el repo local con uno remoto</td></tr>
+          <tr><td><code>git remote -v</code></td><td>Muestra los remotos configurados</td></tr>
+          <tr><td><code>git push origin [rama]</code></td><td>Sube los commits al remoto</td></tr>
+          <tr><td><code>git pull origin [rama]</code></td><td>Descarga y fusiona los cambios del remoto</td></tr>
+          <tr><td><code>git fetch</code></td><td>Descarga cambios <strong>sin</strong> fusionarlos (más seguro que pull)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Ramas y fusión</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><code>git branch</code></td><td>Lista las ramas locales (marca la activa con <code>*</code>)</td></tr>
+          <tr><td><code>git branch [nombre]</code></td><td>Crea una nueva rama</td></tr>
+          <tr><td><code>git checkout [rama]</code></td><td>Cambia a otra rama</td></tr>
+          <tr><td><code>git checkout -b [rama]</code></td><td>Crea y cambia a una nueva rama (atajo)</td></tr>
+          <tr><td><code>git switch [rama]</code></td><td>Versión moderna de <code>checkout</code> (más segura)</td></tr>
+          <tr><td><code>git merge [rama]</code></td><td>Fusiona otra rama dentro de la actual</td></tr>
+          <tr><td><code>git branch -d [rama]</code></td><td>Elimina una rama (si ya fue fusionada)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Avanzados y de rescate</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td><code>git diff</code></td><td>Muestra qué cambió línea por línea</td></tr>
+          <tr><td><code>git reset [archivo]</code></td><td>Quita un archivo del staging (sin perder cambios)</td></tr>
+          <tr><td><code>git restore [archivo]</code></td><td>Descarta los cambios en un archivo modificado</td></tr>
+          <tr><td><code>git stash</code></td><td>Guarda cambios temporalmente (cajón)</td></tr>
+          <tr><td><code>git stash pop</code></td><td>Recupera los cambios guardados con <code>stash</code></td></tr>
+          <tr><td><code>git tag [nombre]</code></td><td>Etiqueta un commit (típicamente versiones: v1.0)</td></tr>
+          <tr><td><code>git show [commit]</code></td><td>Detalles de un commit específico</td></tr>
+          <tr><td><code>git blame [archivo]</code></td><td>Quién modificó cada línea y cuándo</td></tr>
+          <tr><td><code>git revert [commit]</code></td><td>Crea un commit que <em>deshace</em> otro (seguro, no borra historial)</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 9. RAMAS ============ -->
+    <section id="ramas">
+      <h2>Ramas (branches): por qué son el corazón de Git</h2>
+      <p>Una rama es una <strong>línea paralela de desarrollo</strong>. Te permite probar ideas, desarrollar funciones nuevas o arreglar bugs sin tocar el código que ya funciona.</p>
+
+      <aside class="callout callout-definicion">
+        <h4 class="callout-title">Imagina esto</h4>
+        <p>Tu rama principal (<code>main</code>) es como el manuscrito final de un libro. Cuando quieres agregar un capítulo nuevo, no escribes directamente sobre el original: sacas una <em>copia</em> (<strong>rama</strong>), escribes ahí, lo revisas, y solo cuando estás seguro, lo agregas al manuscrito final (<strong>merge</strong>).</p>
+      </aside>
+
+      <div class="diagram">
+        <pre class="mermaid">
+gitGraph
+    commit id: "inicio"
+    commit id: "add login"
+    branch feature/dark-mode
+    checkout feature/dark-mode
+    commit id: "estilos dark"
+    commit id: "toggle btn"
+    checkout main
+    commit id: "fix bug"
+    merge feature/dark-mode
+    commit id: "release v1.1"
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 5.</strong> Una rama de <em>feature</em> nace de <code>main</code>, evoluciona en paralelo y se fusiona cuando está lista.</div>
+      </div>
+
+      <h3>Crear y trabajar con ramas</h3>
+      <pre class="code-block shell" data-lang="bash"><code># Ver en qué rama estás y qué ramas existen
+git branch
+
+# Crear y cambiar a una rama nueva
+git checkout -b feature/login
+
+# Hacer cambios, agregar, commit...
+git add .
+git commit -m "implementa formulario de login"
+
+# Subir la rama nueva al remoto
+git push -u origin feature/login
+
+# Volver a la rama principal
+git checkout main
+
+# Fusionar la rama de feature en main
+git merge feature/login
+
+# Borrar la rama ya fusionada (opcional)
+git branch -d feature/login</code></pre>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Regla de oro</h4>
+        <p><strong>Nunca trabajes directamente en <code>main</code></strong> en proyectos serios. Siempre crea una rama, haz tus cambios ahí, y luego pide que se fusione vía Pull Request. Esto protege la rama principal de errores y permite revisión.</p>
+      </aside>
+
+      <h3>Convenciones de nombres de ramas</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Prefijo</th><th>Para qué</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>feature/</code></td><td>Nueva funcionalidad</td><td><code>feature/dark-mode</code></td></tr>
+          <tr><td><code>fix/</code> o <code>bugfix/</code></td><td>Corrección de error</td><td><code>fix/login-validation</code></td></tr>
+          <tr><td><code>hotfix/</code></td><td>Corrección urgente en producción</td><td><code>hotfix/security-patch</code></td></tr>
+          <tr><td><code>refactor/</code></td><td>Reescribir sin cambiar comportamiento</td><td><code>refactor/auth-service</code></td></tr>
+          <tr><td><code>docs/</code></td><td>Solo documentación</td><td><code>docs/readme-install</code></td></tr>
+          <tr><td><code>test/</code></td><td>Agregar pruebas</td><td><code>test/cart-checkout</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 10. PULL REQUESTS ============ -->
+    <section id="pr">
+      <h2>Pull Requests: la magia colaborativa</h2>
+      <p>Un <strong>Pull Request</strong> (o <em>Merge Request</em> en GitLab) es la pieza central de la colaboración en GitHub. Es una solicitud formal para que tu rama se fusione con otra (típicamente <code>main</code>), pero antes de hacerlo <strong>otras personas pueden revisar tu código</strong>, dejar comentarios, sugerir cambios y aprobar.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant Tú
+    participant GitHub
+    participant Revisor
+
+    Tú->>GitHub: git push origin feature/x
+    Tú->>GitHub: Abrir Pull Request
+    GitHub->>Revisor: Notificación de PR
+    Revisor->>GitHub: Revisa código, deja comentarios
+    GitHub-->>Tú: Notificación de feedback
+    Tú->>GitHub: Push de cambios al mismo branch
+    Revisor->>GitHub: Aprueba PR
+    Tú->>GitHub: Merge a main
+    GitHub-->>Tú: Rama fusionada ✓
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 6.</strong> Ciclo de vida típico de un Pull Request, desde el push inicial hasta el merge.</div>
+      </div>
+
+      <h3>Crear un Pull Request paso a paso</h3>
+      <ol>
+        <li>Haz tus cambios en una rama (<em>nunca</em> directamente en main).</li>
+        <li>Sube la rama: <code>git push -u origin feature/x</code></li>
+        <li>Ve a GitHub. Aparecerá un banner <em>"Compare &amp; pull request"</em>. Pulsa.</li>
+        <li>Escribe un <strong>título</strong> claro y una <strong>descripción</strong> que explique <em>qué</em> y <em>por qué</em>.</li>
+        <li>Asigna <em>reviewers</em> (revisores) si trabajas en equipo.</li>
+        <li>Pulsa <em>Create pull request</em>.</li>
+        <li>Espera la revisión. Si piden cambios, hazlos en tu rama local y haz <code>push</code>: el PR se actualiza solo.</li>
+        <li>Cuando aprueben, pulsa <em>Merge pull request</em> y luego <em>Delete branch</em> (la rama ya cumplió su misión).</li>
+      </ol>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">El secreto de un buen PR</h4>
+        <p>Los estudios muestran que la calidad de la revisión <strong>cae bruscamente</strong> en PRs de más de 400 líneas — los revisores dejan de leer con atención. <strong>PRs pequeños = mejor código.</strong> Cada PR debe representar un único cambio lógico.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 11. ESTRATEGIAS ============ -->
+    <section id="estrategias">
+      <h2>Estrategias de branching: GitHub Flow vs Git Flow</h2>
+      <p>Existen varias formas de organizar las ramas en un proyecto. Las dos más conocidas son <strong>GitHub Flow</strong> (simple) y <strong>Git Flow</strong> (complejo). Aprende la primera, conoce la segunda.</p>
+
+      <h3>GitHub Flow (recomendado para empezar)</h3>
+      <p>Una rama principal <code>main</code> siempre desplegable. Cualquier cambio nace en una rama feature, pasa por PR, y se fusiona a <code>main</code>. Simple, rápido, ideal para proyectos personales y CI/CD.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+gitGraph
+    commit
+    commit
+    branch feature-a
+    commit
+    commit
+    checkout main
+    merge feature-a
+    branch feature-b
+    commit
+    checkout main
+    merge feature-b
+    commit
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 7.</strong> GitHub Flow: una sola rama principal, ramas de feature efímeras.</div>
+      </div>
+
+      <h3>Git Flow (proyectos grandes con releases)</h3>
+      <p>Múltiples ramas con roles específicos: <code>main</code> (producción), <code>develop</code> (desarrollo), <code>feature/</code>, <code>release/</code>, <code>hotfix/</code>. Más estructurado pero más complejo. Hoy se considera "viejo" y se prefiere GitHub Flow + trunk-based development en la mayoría de equipos modernos.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+gitGraph
+    commit id: "v1.0"
+    branch develop
+    commit
+    branch feature/login
+    commit
+    commit
+    checkout develop
+    merge feature/login
+    branch release/1.1
+    commit id: "RC"
+    checkout main
+    merge release/1.1 tag: "v1.1"
+    checkout develop
+    merge release/1.1
+        </pre>
+        <div class="diagram-caption"><strong>Fig. 8.</strong> Git Flow: estructura formal con ramas de release y hotfix.</div>
+      </div>
+
+      <div class="table-wrap">
+      <table class="ieee-table comparison">
+        <caption>Comparación rápida</caption>
+        <thead><tr><th>Aspecto</th><th>GitHub Flow</th><th>Git Flow</th></tr></thead>
+        <tbody>
+          <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
+          <tr><td>Ramas permanentes</td><td>1 (<code>main</code>)</td><td>2 (<code>main</code> + <code>develop</code>)</td></tr>
+          <tr><td>Frecuencia de releases</td><td>Continua (cada PR)</td><td>Por sprints / programada</td></tr>
+          <tr><td>Ideal para</td><td>Web apps, CI/CD, proyectos personales</td><td>Software con versiones formales, librerías</td></tr>
+          <tr><td>Curva de aprendizaje</td><td>Plana</td><td>Empinada</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 12. SEGURIDAD ============ -->
+    <section id="seguridad">
+      <h2>Seguridad: SSH y Personal Access Tokens</h2>
+      <p>GitHub ya no acepta tu contraseña real para operaciones desde la terminal. Necesitas <strong>SSH</strong> (recomendado) o un <strong>Personal Access Token (PAT)</strong>.</p>
+
+      <h3>Opción A: Claves SSH (la más cómoda a largo plazo)</h3>
+      <p>SSH usa criptografía de clave pública: tu PC genera una pareja de llaves (pública + privada). La pública se la das a GitHub, la privada nunca sale de tu PC. Cuando haces push, GitHub te reconoce automáticamente sin pedirte contraseña.</p>
+
+      <pre class="code-block shell" data-lang="bash"><code># Generar par de llaves (acepta los defaults pulsando Enter)
+ssh-keygen -t rsa -b 4096 -C "tucorreo@ejemplo.com"
+
+# Iniciar el agente SSH
+eval "$(ssh-agent -s)"
+
+# Agregar tu llave privada al agente
+ssh-add ~/.ssh/id_rsa
+
+# Copiar la llave pública (lo que pegarás en GitHub)
+cat ~/.ssh/id_rsa.pub</code></pre>
+
+      <p><strong>Luego en GitHub:</strong></p>
+      <ol>
+        <li>Foto de perfil → <em>Settings</em></li>
+        <li>Menú izquierdo → <em>SSH and GPG keys</em></li>
+        <li><em>New SSH key</em>: en <em>Title</em> pon el nombre de tu dispositivo (ej: "Laptop personal"), en <em>Key type</em> deja "Authentication Key", y en el cuadro pega lo que te dio <code>cat ~/.ssh/id_rsa.pub</code></li>
+        <li>Pulsa <em>Add SSH key</em></li>
+      </ol>
+
+      <h3>Opción B: Personal Access Token (PAT)</h3>
+      <p>Es una "contraseña alternativa" con permisos específicos y caducidad. Útil cuando no puedes usar SSH (ej: en cuentas corporativas).</p>
+
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Crear un Personal Access Token (clásico)</caption>
+        <thead><tr><th>Paso</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Foto de perfil → <em>Settings</em></td></tr>
+          <tr><td>2</td><td>Menú izquierdo (abajo) → <em>Developer settings</em></td></tr>
+          <tr><td>3</td><td><em>Personal access tokens</em> → <em>Tokens (classic)</em></td></tr>
+          <tr><td>4</td><td><em>Generate new token (classic)</em></td></tr>
+          <tr><td>5</td><td>En <em>Note</em>: descripción (ej: "Token laptop personal")</td></tr>
+          <tr><td>6</td><td>En <em>Expiration</em>: 60 o 90 días recomendado</td></tr>
+          <tr><td>7</td><td>En <em>Scopes</em>: marca <code>repo</code> (control total de repos)</td></tr>
+          <tr><td>8</td><td><em>Generate token</em> → <strong>cópialo ahora</strong> (no podrás verlo otra vez)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>Cuando hagas <code>git push</code> y te pida contraseña, en lugar de tu contraseña real pega el token:</p>
+
+      <pre class="code-block shell" data-lang="bash"><code>Username for 'https://github.com': tu-usuario
+Password for 'https://tu-usuario@github.com': pega-el-token-aqui</code></pre>
+
+      <aside class="callout callout-error">
+        <h4 class="callout-title">Errores que JAMÁS debes cometer</h4>
+        <p><strong>1.</strong> Compartir tu clave privada (<code>id_rsa</code>) — es como dar tu contraseña.</p>
+        <p><strong>2.</strong> Subir tu PAT o tu archivo <code>.env</code> a un repo público — los bots los detectan en minutos.</p>
+        <p><strong>3.</strong> Pegar tu API key en código JavaScript que vaya al navegador — cualquiera la ve con F12.</p>
+        <p><strong>Solución preventiva:</strong> usa <code>.gitignore</code> desde el primer commit.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 13. TIPS ============ -->
+    <section id="tips">
+      <h2>Tips, buenas prácticas y trucos profesionales</h2>
+
+      <h3>Mensajes de commit que cuentan una historia</h3>
+      <p>Un buen mensaje de commit explica el <strong>por qué</strong>, no el <em>qué</em> (el qué se ve en el diff).</p>
+
+      <aside class="callout callout-ejemplo callout-tip">
+        <h4 class="callout-title">Compara estos commits</h4>
+        <p>❌ <code>git commit -m "cambios"</code></p>
+        <p>❌ <code>git commit -m "fix"</code></p>
+        <p>❌ <code>git commit -m "actualizo index.html"</code></p>
+        <p>✅ <code>git commit -m "corrige validación de email en formulario de registro"</code></p>
+        <p>✅ <code>git commit -m "agrega modo oscuro al panel lateral"</code></p>
+      </aside>
+
+      <h3>Convención Conventional Commits (estándar profesional)</h3>
+      <pre class="code-block" data-lang="formato"><code>tipo(área): descripción corta
+
+# Tipos comunes
+feat:     nueva funcionalidad
+fix:      corrección de bug
+docs:     cambios en documentación
+style:    formato (espacios, comas) sin cambio lógico
+refactor: reorganización sin cambiar comportamiento
+test:     agregar/corregir tests
+chore:    tareas de mantenimiento
+
+# Ejemplos
+feat(auth): agrega login con Google
+fix(cart): corrige cálculo de IVA en checkout
+docs(readme): añade sección de instalación</code></pre>
+
+      <h3>Crear un .gitignore desde el día 1</h3>
+      <p>Es un archivo que le dice a Git qué archivos <strong>nunca</strong> debe trackear: contraseñas, dependencias pesadas, archivos temporales del editor.</p>
+
+      <pre class="code-block" data-lang="archivo: .gitignore"><code># Variables de entorno y secretos
+.env
+.env.local
+*.key
+*.pem
+
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos del editor
+.vscode/
+.idea/
+*.swp
+
+# Build / compilación
+dist/
+build/
+*.log</code></pre>
+
+      <h3>Otros tips de oro</h3>
+      <ul>
+        <li><strong>Commitea seguido y pequeño:</strong> mejor 10 commits de una idea cada uno que 1 commit gigante. Es más fácil revertir y entender.</li>
+        <li><strong>Pull antes de push:</strong> si trabajas en equipo, siempre haz <code>git pull</code> antes de empezar a programar y antes de hacer <code>push</code>.</li>
+        <li><strong>Usa <code>git fetch</code> en lugar de <code>git pull</code></strong> cuando quieras ver qué cambió antes de fusionarlo.</li>
+        <li><strong>Aprovecha <code>git stash</code>:</strong> cuando te llaman para arreglar algo urgente en otra rama y tienes cambios sin commitear, "guárdalos en el cajón" con <code>git stash</code> y recupéralos después con <code>git stash pop</code>.</li>
+        <li><strong>Configura aliases:</strong> <code>git config --global alias.st status</code> te permite escribir <code>git st</code> en lugar de <code>git status</code>. Multiplica tu velocidad.</li>
+        <li><strong>Lee el <code>git log</code> gráfico:</strong> <code>git log --oneline --graph --all --decorate</code> es uno de los comandos más útiles que existen.</li>
+        <li><strong>README es tu carta de presentación:</strong> dedícale tiempo. Debe tener: descripción, instalación, uso, capturas. Es lo primero que ve quien visita tu repo.</li>
+        <li><strong>Usa GitHub Pages:</strong> cualquier repo público puede convertirse en un sitio web gratis. Settings → Pages → Source.</li>
+        <li><strong>Stars y forks:</strong> dar ⭐ a proyectos que te gusten es como bookmarking. Hacer <em>fork</em> es clonar un repo a tu cuenta para poder modificarlo.</li>
+        <li><strong>Issues como to-do list:</strong> puedes usar issues para registrar bugs y tareas pendientes en tu propio proyecto.</li>
+      </ul>
+
+      <h3>Comandos útiles que casi nadie enseña</h3>
+      <pre class="code-block shell" data-lang="bash"><code># Ver historial visual y compacto
+git log --oneline --graph --all --decorate
+
+# Buscar texto dentro del historial de commits
+git log -S "función_que_buscas"
+
+# Ver quién modificó cada línea de un archivo
+git blame archivo.js
+
+# Deshacer el último commit pero mantener los cambios
+git reset --soft HEAD~1
+
+# Renombrar el último commit (antes del push)
+git commit --amend -m "nuevo mensaje"
+
+# Ver diferencias entre dos ramas
+git diff main..feature/x
+
+# Ver commits que están en una rama pero no en otra
+git log main..feature/x --oneline</code></pre>
+    </section>
+
+    <!-- ============ 14. ERRORES ============ -->
+    <section id="errores">
+      <h2>Errores comunes y cómo resolverlos</h2>
+
+      <h3>1. "fatal: not a git repository"</h3>
+      <p>Estás en una carpeta donde no hay <code>git init</code>. Solución:</p>
+      <pre class="code-block shell" data-lang="bash"><code>git init
+# O verifica que estás en la carpeta correcta:
+pwd</code></pre>
+
+      <h3>2. "Updates were rejected because the remote contains work..."</h3>
+      <p>El remoto tiene commits que tu local no tiene. Solución:</p>
+      <pre class="code-block shell" data-lang="bash"><code>git pull origin main
+# Si avisa de "histories no relacionadas":
+git pull origin main --allow-unrelated-histories
+# Luego:
+git push</code></pre>
+
+      <h3>3. "Please tell me who you are"</h3>
+      <p>No has configurado tu identidad. Solución:</p>
+      <pre class="code-block shell" data-lang="bash"><code>git config --global user.name "Tu Nombre"
+git config --global user.email "tucorreo@ejemplo.com"</code></pre>
+
+      <h3>4. "Authentication failed" al hacer push</h3>
+      <p>GitHub no acepta contraseña. Genera un PAT (sección Seguridad) o configura SSH.</p>
+
+      <h3>5. Subiste un archivo con contraseñas por error</h3>
+      <aside class="callout callout-error">
+        <h4 class="callout-title">Acción urgente</h4>
+        <p><strong>1.</strong> Considera la contraseña/key <em>comprometida</em>: cámbiala YA en el servicio correspondiente. Aunque borres el commit, ya quedó expuesta.</p>
+        <p><strong>2.</strong> Para borrar el archivo del historial: <code>git filter-branch</code> o la herramienta <a href="https://rtyley.github.io/bfg-repo-cleaner/" target="_blank">BFG Repo-Cleaner</a>.</p>
+        <p><strong>3.</strong> Agrega el archivo a <code>.gitignore</code> para que no vuelva a pasar.</p>
+      </aside>
+
+      <h3>6. Conflictos de merge</h3>
+      <p>Dos personas modificaron las mismas líneas. Git no sabe qué versión usar. Cuando abres el archivo verás algo así:</p>
+      <pre class="code-block" data-lang="conflicto"><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+const color = "azul";
+=======
+const color = "rojo";
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/dark-mode</code></pre>
+      <p>Edita el archivo dejando solo la versión correcta (quita los marcadores <code>&lt;&lt;&lt;</code>, <code>===</code>, <code>&gt;&gt;&gt;</code>), guarda, y haz:</p>
+      <pre class="code-block shell" data-lang="bash"><code>git add archivo-en-conflicto.js
+git commit -m "resuelve conflicto de merge en color principal"</code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">VS Code te ayuda con conflictos</h4>
+        <p>Cuando abres un archivo en conflicto, VS Code muestra botones <em>"Accept Current Change"</em>, <em>"Accept Incoming Change"</em>, <em>"Accept Both"</em>. Úsalos en lugar de editar manualmente.</p>
+      </aside>
+
+      <h3>7. Olvidaste hacer pull y ahora tienes conflictos</h3>
+      <p>Si tus cambios son pequeños y no quieres lidiar con conflictos:</p>
+      <pre class="code-block shell" data-lang="bash"><code># Guarda tus cambios en el cajón
+git stash
+
+# Baja los últimos cambios del remoto
+git pull
+
+# Recupera tus cambios encima de los del remoto
+git stash pop
+
+# Si hay conflictos ahora, resuélvelos manualmente</code></pre>
+    </section>
+
+    <footer class="footer-note">
+      <p>Guía elaborada con paleta IEEE sobria · Diagramas en Mermaid.js · Compatible con GitHub Pages<br>
+      Fuentes: documentación oficial de Git, GitHub Docs, VS Code Docs, Atlassian Tutorials.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
