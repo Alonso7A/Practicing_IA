@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 11 — Estrategias: Flow vs GitFlow</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 11</div>
+      <h1>Estrategias de branching: GitHub Flow vs Git Flow</h1>
+      <p class="chapter-subtitle">Dos formas distintas de organizar las ramas de un proyecto. Una es simple y moderna; la otra, formal y para releases grandes. Aprende cuál elegir.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Existen varias formas de organizar las ramas en un proyecto. Las dos más conocidas son <strong>GitHub Flow</strong> (simple) y <strong>Git Flow</strong> (complejo). Aprende la primera, conoce la segunda.</p>
+
+    <h2>GitHub Flow (recomendado para empezar)</h2>
+    <p>Una rama principal <code>main</code> siempre desplegable. Cualquier cambio nace en una rama <em>feature</em>, pasa por PR, y se fusiona a <code>main</code>. Simple, rápido, ideal para proyectos personales y CI/CD.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+gitGraph
+    commit
+    commit
+    branch feature-a
+    commit
+    commit
+    checkout main
+    merge feature-a
+    branch feature-b
+    commit
+    checkout main
+    merge feature-b
+    commit
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> GitHub Flow: una sola rama principal, ramas de feature efímeras.</div>
+    </div>
+
+    <h2>Git Flow (proyectos grandes con releases)</h2>
+    <p>Múltiples ramas con roles específicos: <code>main</code> (producción), <code>develop</code> (desarrollo), <code>feature/</code>, <code>release/</code>, <code>hotfix/</code>. Más estructurado pero más complejo. Hoy se considera "viejo" y se prefiere GitHub Flow + trunk-based development en la mayoría de equipos modernos.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+gitGraph
+    commit id: "v1.0"
+    branch develop
+    commit
+    branch feature/login
+    commit
+    commit
+    checkout develop
+    merge feature/login
+    branch release/1.1
+    commit id: "RC"
+    checkout main
+    merge release/1.1 tag: "v1.1"
+    checkout develop
+    merge release/1.1
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 2.</strong> Git Flow: estructura formal con ramas de release y hotfix.</div>
+    </div>
+
+    <h2>Comparación rápida</h2>
+    <div class="table-wrap">
+    <table class="ieee-table comparison">
+      <caption>GitHub Flow vs Git Flow</caption>
+      <thead><tr><th>Aspecto</th><th>GitHub Flow</th><th>Git Flow</th></tr></thead>
+      <tbody>
+        <tr><td>Complejidad</td><td>Baja</td><td>Alta</td></tr>
+        <tr><td>Ramas permanentes</td><td>1 (<code>main</code>)</td><td>2 (<code>main</code> + <code>develop</code>)</td></tr>
+        <tr><td>Frecuencia de releases</td><td>Continua (cada PR)</td><td>Por sprints / programada</td></tr>
+        <tr><td>Ideal para</td><td>Web apps, CI/CD, proyectos personales</td><td>Software con versiones formales, librerías</td></tr>
+        <tr><td>Curva de aprendizaje</td><td>Plana</td><td>Empinada</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">¿Cuál usar?</h4>
+      <p>Si trabajas en un proyecto personal, una página web o un equipo pequeño: <strong>GitHub Flow</strong>. Si trabajas en software con versiones numeradas formales (ej: v2.4.1) y necesitas mantener varias releases en paralelo: <strong>Git Flow</strong>.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../10-pull-requests/index.html">← Anterior: Pull Requests</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../12-seguridad/index.html">Siguiente: Seguridad SSH y PAT →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

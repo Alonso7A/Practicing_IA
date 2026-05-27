@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 13 — Tips y buenas prácticas</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 13</div>
+      <h1>Tips, buenas prácticas y trucos profesionales</h1>
+      <p class="chapter-subtitle">Mensajes de commit que cuentan una historia, Conventional Commits, .gitignore desde el día uno y comandos secretos que casi nadie enseña.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>Mensajes de commit que cuentan una historia</h2>
+    <p>Un buen mensaje de commit explica el <strong>por qué</strong>, no el <em>qué</em> (el qué se ve en el diff).</p>
+
+    <aside class="callout callout-ejemplo callout-tip">
+      <h4 class="callout-title">Compara estos commits</h4>
+      <p>❌ <code>git commit -m "cambios"</code></p>
+      <p>❌ <code>git commit -m "fix"</code></p>
+      <p>❌ <code>git commit -m "actualizo index.html"</code></p>
+      <p>✅ <code>git commit -m "corrige validación de email en formulario de registro"</code></p>
+      <p>✅ <code>git commit -m "agrega modo oscuro al panel lateral"</code></p>
+    </aside>
+
+    <h2>Convención Conventional Commits (estándar profesional)</h2>
+    <pre class="code-block" data-lang="formato"><code>tipo(área): descripción corta
+
+# Tipos comunes
+feat:     nueva funcionalidad
+fix:      corrección de bug
+docs:     cambios en documentación
+style:    formato (espacios, comas) sin cambio lógico
+refactor: reorganización sin cambiar comportamiento
+test:     agregar/corregir tests
+chore:    tareas de mantenimiento
+
+# Ejemplos
+feat(auth): agrega login con Google
+fix(cart): corrige cálculo de IVA en checkout
+docs(readme): añade sección de instalación</code></pre>
+
+    <h2>Crear un .gitignore desde el día 1</h2>
+    <p>Es un archivo que le dice a Git qué archivos <strong>nunca</strong> debe trackear: contraseñas, dependencias pesadas, archivos temporales del editor.</p>
+
+    <pre class="code-block" data-lang="archivo: .gitignore"><code># Variables de entorno y secretos
+.env
+.env.local
+*.key
+*.pem
+
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos del editor
+.vscode/
+.idea/
+*.swp
+
+# Build / compilación
+dist/
+build/
+*.log</code></pre>
+
+    <h2>Otros tips de oro</h2>
+    <ul>
+      <li><strong>Commitea seguido y pequeño:</strong> mejor 10 commits de una idea cada uno que 1 commit gigante. Es más fácil revertir y entender.</li>
+      <li><strong>Pull antes de push:</strong> si trabajas en equipo, siempre haz <code>git pull</code> antes de empezar a programar y antes de hacer <code>push</code>.</li>
+      <li><strong>Usa <code>git fetch</code> en lugar de <code>git pull</code></strong> cuando quieras ver qué cambió antes de fusionarlo.</li>
+      <li><strong>Aprovecha <code>git stash</code>:</strong> cuando te llaman para arreglar algo urgente en otra rama y tienes cambios sin commitear, "guárdalos en el cajón" con <code>git stash</code> y recupéralos después con <code>git stash pop</code>.</li>
+      <li><strong>Configura aliases:</strong> <code>git config --global alias.st status</code> te permite escribir <code>git st</code> en lugar de <code>git status</code>. Multiplica tu velocidad.</li>
+      <li><strong>Lee el <code>git log</code> gráfico:</strong> <code>git log --oneline --graph --all --decorate</code> es uno de los comandos más útiles que existen.</li>
+      <li><strong>README es tu carta de presentación:</strong> dedícale tiempo. Debe tener: descripción, instalación, uso, capturas. Es lo primero que ve quien visita tu repo.</li>
+      <li><strong>Usa GitHub Pages:</strong> cualquier repo público puede convertirse en un sitio web gratis. Settings → Pages → Source.</li>
+      <li><strong>Stars y forks:</strong> dar ⭐ a proyectos que te gusten es como bookmarking. Hacer <em>fork</em> es clonar un repo a tu cuenta para poder modificarlo.</li>
+      <li><strong>Issues como to-do list:</strong> puedes usar issues para registrar bugs y tareas pendientes en tu propio proyecto.</li>
+    </ul>
+
+    <h2>Comandos útiles que casi nadie enseña</h2>
+    <pre class="code-block shell" data-lang="bash"><code># Ver historial visual y compacto
+git log --oneline --graph --all --decorate
+
+# Buscar texto dentro del historial de commits
+git log -S "función_que_buscas"
+
+# Ver quién modificó cada línea de un archivo
+git blame archivo.js
+
+# Deshacer el último commit pero mantener los cambios
+git reset --soft HEAD~1
+
+# Renombrar el último commit (antes del push)
+git commit --amend -m "nuevo mensaje"
+
+# Ver diferencias entre dos ramas
+git diff main..feature/x
+
+# Ver commits que están en una rama pero no en otra
+git log main..feature/x --oneline</code></pre>
+
+    <h2>Resumen: ¿qué herramienta uso para qué?</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Comparativa entre la web, VS Code y la terminal</caption>
+      <thead><tr><th>Quiero...</th><th>En la web</th><th>En VS Code</th><th>En terminal</th></tr></thead>
+      <tbody>
+        <tr><td>Crear repo nuevo</td><td>New repository</td><td>Initialize Repository</td><td><code>git init</code></td></tr>
+        <tr><td>Subir archivos</td><td>Add file → Upload</td><td>Stage + Commit + Push</td><td><code>git add . && git commit && git push</code></td></tr>
+        <tr><td>Bajar un repo</td><td>Code → Download ZIP</td><td>Git: Clone</td><td><code>git clone &lt;url&gt;</code></td></tr>
+        <tr><td>Ver historial</td><td>Pestaña "Commits"</td><td>Extensión Git Graph</td><td><code>git log --oneline</code></td></tr>
+        <tr><td>Crear rama</td><td>Branch dropdown → New</td><td>Clic en rama abajo izq.</td><td><code>git checkout -b nombre</code></td></tr>
+        <tr><td>Pedir revisión</td><td>Pull requests → New PR</td><td>Extensión GitHub PR</td><td>(no se hace en terminal)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../12-seguridad/index.html">← Anterior: Seguridad</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../14-errores/index.html">Siguiente: Errores comunes →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

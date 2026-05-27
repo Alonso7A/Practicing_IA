@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 7 — GitHub en VS Code</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 07</div>
+      <h1>GitHub desde Visual Studio Code</h1>
+      <p class="chapter-subtitle">El panel Source Control, atajos clave, extensiones imprescindibles, cómo clonar repos y conectar tu cuenta sin escribir contraseñas cada vez.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>VS Code tiene integración nativa con Git. No <strong>necesitas</strong> usar la terminal — todo se puede hacer con clics — pero combinar ambos te hace más rápido y entiendes lo que pasa por debajo.</p>
+
+    <h2>El panel "Source Control"</h2>
+    <p>Se abre con <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> o pulsando el icono con forma de bifurcación en la barra lateral izquierda. Verás:</p>
+
+    <ul>
+      <li><strong>Changes:</strong> archivos modificados que aún no están en staging.</li>
+      <li><strong>Staged Changes:</strong> archivos listos para commitear.</li>
+      <li><strong>Caja de mensaje:</strong> donde escribes el mensaje del commit.</li>
+      <li><strong>Botón ✓ Commit:</strong> equivalente a <code>git commit</code>.</li>
+    </ul>
+
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TD
+    A[📂 Editor de archivos]:::edit
+    B[🔀 Source Control]:::vc
+    C[➕ Stage Changes]:::action
+    D[💬 Mensaje commit]:::action
+    E[✓ Commit]:::action
+    F[☁️ Sync / Push]:::cloud
+
+    A -->|editas| B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+
+    classDef edit fill:#F5F5F5,stroke:#4A4A4A,color:#1F1F1F
+    classDef vc fill:#E8EEF7,stroke:#1F3A68,stroke-width:2px,color:#1F1F1F
+    classDef action fill:#1F3A68,stroke:#0F1F3D,color:#FFFFFF
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Flujo gráfico equivalente al ciclo de comandos en la terminal de VS Code.</div>
+    </div>
+
+    <h2>Clonar un repo desde VS Code (forma fácil de empezar)</h2>
+    <ol>
+      <li>Pulsa <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> para abrir la paleta de comandos.</li>
+      <li>Escribe <code>Git: Clone</code> y selecciónalo.</li>
+      <li>Pega la URL del repo (que copias del botón <strong>Code</strong> en GitHub).</li>
+      <li>Elige una carpeta de tu PC donde guardarlo.</li>
+      <li>VS Code te pregunta si quieres abrir el repo → <strong>Open</strong>.</li>
+    </ol>
+
+    <h2>Inicializar un repo nuevo desde VS Code</h2>
+    <p>Si tienes una carpeta con archivos y la quieres convertir en repo Git:</p>
+    <ol>
+      <li>Abre la carpeta en VS Code (<em>File → Open Folder</em>).</li>
+      <li>Ve a Source Control (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>).</li>
+      <li>Pulsa <strong>Initialize Repository</strong>.</li>
+      <li>Verás todos tus archivos como <em>U</em> (untracked).</li>
+    </ol>
+
+    <h2>Flujo de trabajo visual en VS Code</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <thead><tr><th>Paso</th><th>Qué haces</th><th>Cómo se ve en VS Code</th></tr></thead>
+      <tbody>
+        <tr><td>1. Editar</td><td>Modificas un archivo</td><td>Aparece con una <strong>M</strong> en Source Control</td></tr>
+        <tr><td>2. Stage</td><td>Preparar el cambio</td><td>Clic en el <strong>+</strong> al lado del archivo</td></tr>
+        <tr><td>3. Commit</td><td>Guardar el cambio</td><td>Escribes mensaje y das <strong>✓</strong></td></tr>
+        <tr><td>4. Push</td><td>Subir a GitHub</td><td>Botón <code>...</code> → <strong>Push</strong> o flecha ↑ abajo</td></tr>
+        <tr><td>5. Pull</td><td>Bajar cambios</td><td>Botón <code>...</code> → <strong>Pull</strong> o flecha ↓</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Atajos de teclado útiles</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Atajos esenciales para Git en VS Code</caption>
+      <thead><tr><th>Atajo</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></td><td>Abrir panel de Source Control</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>`</kbd></td><td>Abrir/cerrar terminal integrada</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></td><td>Paleta de comandos (escribir "Git:" lista todas las acciones)</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Confirmar commit (con el panel de Source Control activo)</td></tr>
+        <tr><td>Clic en nombre de rama (abajo izq.)</td><td>Cambiar de rama o crear una nueva</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Conectar VS Code con tu cuenta de GitHub</h2>
+    <ol>
+      <li>Pulsa <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> y escribe <code>Sign in to GitHub</code>.</li>
+      <li>Se abre el navegador → <strong>Authorize</strong>.</li>
+      <li>Vuelves a VS Code. Listo: ahora puedes hacer push/pull sin que te pida contraseña.</li>
+    </ol>
+
+    <h2>Extensiones imprescindibles</h2>
+    <ul>
+      <li><strong>GitHub Pull Requests and Issues</strong> — gestiona PRs sin salir de VS Code.</li>
+      <li><strong>GitLens</strong> — muestra quién escribió cada línea (<em>blame</em>) y la historia de cada cambio.</li>
+      <li><strong>Git Graph</strong> — visualización del historial como árbol.</li>
+      <li><strong>Git History</strong> — explora commits y diferencias.</li>
+    </ul>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">Tip</h4>
+      <p>Cuando pulsas <em>Commit</em> sin nada en staging, VS Code te pregunta si quieres hacer <em>stage all</em>. Si dices que sí, equivale a <code>git add .</code> seguido de <code>git commit</code>. Útil pero peligroso si tienes archivos que no querías incluir — siempre revisa el panel antes.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../06-repo-web/index.html">← Anterior: Crear repo en la web</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../08-comandos/index.html">Siguiente: Comandos esenciales →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

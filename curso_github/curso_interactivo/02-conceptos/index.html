@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 2 — Conceptos clave</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 02</div>
+      <h1>Conceptos clave que debes conocer</h1>
+      <p class="chapter-subtitle">El vocabulario esencial de Git y GitHub explicado con palabras simples. Es la base sobre la que se apoyan todos los capítulos siguientes.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Antes de empezar a teclear comandos, familiarízate con este vocabulario. Lo encontrarás en cada tutorial, error y conversación sobre Git. No hace falta memorizarlo de golpe: vuelve aquí cuando lo necesites.</p>
+
+    <h2>Tarjetas de vocabulario</h2>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h4>Repositorio (repo)</h4>
+        <p>La carpeta de tu proyecto, junto con todo el historial de cambios. Puede ser <em>local</em> (en tu PC) o <em>remoto</em> (en GitHub).</p>
+      </div>
+      <div class="concept-card">
+        <h4>Commit</h4>
+        <p>Una "fotografía" de tus archivos en un momento dado. Cada commit tiene un mensaje, un autor y un identificador único (hash).</p>
+      </div>
+      <div class="concept-card">
+        <h4>Branch (rama)</h4>
+        <p>Una línea paralela de desarrollo. Te permite trabajar en una funcionalidad sin afectar el código principal.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Merge</h4>
+        <p>Fusionar los cambios de una rama dentro de otra. Es cómo se incorpora tu trabajo a la rama principal.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Push / Pull</h4>
+        <p><code>push</code> sube tus commits al servidor remoto. <code>pull</code> descarga lo que otros subieron.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Clone</h4>
+        <p>Descargar un repositorio remoto completo a tu máquina para empezar a trabajar en él.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Staging area</h4>
+        <p>Zona intermedia donde colocas los archivos que quieres incluir en tu próximo commit. Se llena con <code>git add</code>.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Pull Request (PR)</h4>
+        <p>Solicitud para fusionar una rama en otra. Es donde ocurre la revisión de código entre colaboradores.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Remote / Origin</h4>
+        <p><em>Remote</em> es la dirección de un repo en internet. <em>Origin</em> es el alias por defecto del remoto principal.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Main / Master</h4>
+        <p>La rama principal del proyecto. Hoy se prefiere <code>main</code>; los repos antiguos usan <code>master</code>.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Issue</h4>
+        <p>Un "ticket" o tarea/bug abierto en el proyecto. Sirve para discutir y dar seguimiento a problemas o ideas.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Fork</h4>
+        <p>Copia personal de un repo ajeno. Te permite modificarlo libremente y luego proponer tus cambios al original.</p>
+      </div>
+    </div>
+
+    <h2>Resumen visual</h2>
+    <aside class="callout callout-resumen">
+      <h4 class="callout-title">Si tuvieras que recordar solo 3 ideas</h4>
+      <p><strong>1.</strong> Un <strong>commit</strong> es una foto. El historial es un álbum de fotos.</p>
+      <p><strong>2.</strong> Una <strong>rama</strong> es una copia paralela donde experimentas sin romper lo principal.</p>
+      <p><strong>3.</strong> <strong>Push</strong> sube, <strong>pull</strong> baja. El resto son matices de estas dos acciones.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../01-intro/index.html">← Anterior: ¿Qué es Git y GitHub?</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../03-instalacion/index.html">Siguiente: Instalación →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

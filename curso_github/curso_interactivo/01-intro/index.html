@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 1 — ¿Qué es Git y qué es GitHub?</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 01</div>
+      <h1>¿Qué es Git y qué es GitHub?</h1>
+      <p class="chapter-subtitle">Entiende de una vez por todas la diferencia entre la herramienta que vive en tu computadora y la plataforma que vive en la nube.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <h2>Dos cosas distintas que se mencionan juntas</h2>
+    <p>Aunque suelen aparecer en la misma frase, <strong>Git</strong> y <strong>GitHub</strong> no son lo mismo. Entender la diferencia es el primer paso para no confundir conceptos.</p>
+
+    <aside class="callout callout-definicion">
+      <h4 class="callout-title">Definición</h4>
+      <p><strong>Git</strong> es un <em>sistema de control de versiones distribuido</em>: un programa que se instala en tu computadora y registra cada cambio que haces en los archivos de un proyecto, permitiéndote volver atrás, comparar versiones y trabajar en paralelo con otras personas.</p>
+      <p><strong>GitHub</strong> es una <em>plataforma en la nube</em> que aloja repositorios Git, añade colaboración (issues, pull requests, code review), respaldo, hosting de páginas, automatizaciones (Actions) y se ha convertido en el portafolio profesional estándar.</p>
+    </aside>
+
+    <aside class="callout callout-resumen">
+      <h4 class="callout-title">Analogía sencilla</h4>
+      <p><strong>Git</strong> es el cuaderno donde anotas todos los cambios, quién los hizo y cuándo.</p>
+      <p><strong>GitHub</strong> es la biblioteca en internet donde guardas ese cuaderno, con mesas para reunirse, ventanas para que otros vean tu trabajo y estantes para organizar los capítulos.</p>
+    </aside>
+
+    <h2>El "porqué" de todo esto</h2>
+    <p>Imagina que estás escribiendo un libro en Word. Cada vez que haces un cambio importante, guardas una copia: <code>libro_v1.docx</code>, <code>libro_v2.docx</code>, <code>libro_v3_final.docx</code>, <code>libro_v3_final_DEFINITIVO.docx</code>... 😅</p>
+    <p>Git hace eso automáticamente, ordenado, sin duplicar archivos pesados, y te deja volver a <em>cualquier</em> versión anterior cuando quieras. Y GitHub guarda esas versiones en internet para que no las pierdas y puedas compartirlas.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart LR
+    A[Tu computadora<br/>📂 Proyecto local]
+    B[Git<br/>🔧 Control de versiones]
+    C[GitHub<br/>☁️ Repositorio remoto]
+    D[Colaboradores<br/>👥 Otros usuarios]
+
+    A -->|git add, commit| B
+    B -->|git push| C
+    C -->|git pull| B
+    C <-->|clonar, PRs| D
+
+    classDef local fill:#E8EEF7,stroke:#1F3A68,stroke-width:2px,color:#1F1F1F
+    classDef tool  fill:#1F3A68,stroke:#0F1F3D,stroke-width:2px,color:#FFFFFF
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+    classDef user  fill:#F5F5F5,stroke:#4A4A4A,stroke-width:1.5px,color:#1F1F1F
+    class A local
+    class B tool
+    class C cloud
+    class D user
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Arquitectura básica: tu computadora con Git habla con GitHub vía push y pull.</div>
+    </div>
+
+    <h2>¿Para qué se usa todo esto en la vida real?</h2>
+    <ul>
+      <li><strong>Llevar control de cambios</strong> en proyectos personales o de equipo.</li>
+      <li><strong>Volver atrás</strong> cuando algo se rompe sin tener que adivinar qué cambió.</li>
+      <li><strong>Colaborar</strong> con otras personas sin pisarse el trabajo entre sí.</li>
+      <li><strong>Respaldar</strong> tu código en la nube por si tu computadora se daña.</li>
+      <li><strong>Mostrar tu portafolio</strong> profesional a empresas que quieran contratarte.</li>
+      <li><strong>Publicar páginas web gratis</strong> con GitHub Pages.</li>
+    </ul>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">Antes de seguir</h4>
+      <p>No necesitas memorizar nada de Git todavía. En el siguiente capítulo verás el vocabulario clave — y a partir del capítulo 3, empezaremos a usarlo.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../index.html" class="nav-home">🏠 Volver al inicio</a>
+    <a href="../02-conceptos/index.html">Siguiente: Conceptos clave →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

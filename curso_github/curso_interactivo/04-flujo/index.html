@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 4 — Flujo de trabajo</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 04</div>
+      <h1>El flujo de trabajo básico de Git</h1>
+      <p class="chapter-subtitle">El ciclo de 4 pasos que vas a repetir miles de veces: editar, agregar, confirmar y subir. Memorízalo: edit → add → commit → push.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Cada vez que modifiques tu proyecto, repetirás este ciclo. Es <strong>el</strong> flujo de Git. Una vez que lo interiorices, el resto del curso encaja en su lugar.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart LR
+    A([1. Editar<br/>archivos]):::start
+    B[2. Staging<br/><code>git add</code>]:::proc
+    C[3. Commit<br/><code>git commit -m</code>]:::proc
+    D[4. Push<br/><code>git push</code>]:::proc
+    E([Repositorio<br/>en GitHub]):::cloud
+
+    A --> B --> C --> D --> E
+    E -.->|otros colaboran| A
+
+    classDef start fill:#1F3A68,stroke:#0F1F3D,stroke-width:2px,color:#FFFFFF
+    classDef proc  fill:#E8EEF7,stroke:#1F3A68,stroke-width:1.5px,color:#1F1F1F
+    classDef cloud fill:#FFF4E5,stroke:#B86E00,stroke-width:2px,color:#1F1F1F
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Ciclo básico de trabajo. Cada commit es un punto de guardado al que puedes volver.</div>
+    </div>
+
+    <h2>Analogía del supermercado</h2>
+    <aside class="callout callout-resumen">
+      <h4 class="callout-title">Cómo entenderlo de una vez</h4>
+      <p>Imagina que vas a comprar. Los productos en tu <strong>carrito</strong> son los archivos en <em>staging</em>. Cuando pasas por <strong>caja</strong> y pagas, ese es el <em>commit</em>. Llevarlo a casa es el <em>push</em>.</p>
+    </aside>
+
+    <h2>Cómo se ve en la terminal</h2>
+    <pre class="code-block shell" data-lang="bash"><code># Ver qué cambió
+git status
+
+# Agregar archivos al staging (todos los modificados)
+git add .
+
+# Crear un commit con un mensaje descriptivo
+git commit -m "agrega validación al formulario de login"
+
+# Subir los cambios al repositorio remoto
+git push</code></pre>
+
+    <h2>Explicación palabra por palabra</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <thead><tr><th>Comando</th><th>¿Qué hace en realidad?</th></tr></thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>Te enseña una "foto" del estado actual: qué archivos cambiaste, cuáles están listos para commit, si hay algo por sincronizar.</td></tr>
+        <tr><td><code>git add .</code></td><td>Mete en el "carrito" (staging) todos los archivos modificados. El <code>.</code> significa "todo lo de esta carpeta".</td></tr>
+        <tr><td><code>git commit -m "mensaje"</code></td><td>Saca una foto de lo que hay en el carrito y la guarda en el historial. El <code>-m</code> es para escribir el mensaje en la misma línea.</td></tr>
+        <tr><td><code>git push</code></td><td>Lleva tus commits desde tu computadora hasta GitHub.</td></tr>
+        <tr><td><code>git pull</code></td><td>Lo contrario de push: baja los cambios que haya en GitHub a tu PC.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">Tip de oro</h4>
+      <p>Ejecuta <code>git status</code> <strong>antes</strong> y <strong>después</strong> de cada paso. Es tu brújula: te dice qué archivos están modificados, cuáles están en staging y si hay algo por sincronizar con el remoto.</p>
+    </aside>
+
+    <h2>Flujo extendido cuando trabajas en equipo</h2>
+    <pre class="code-block shell" data-lang="bash"><code>git pull                          # 1. Bajas lo último de GitHub
+git checkout -b mi-rama           # 2. Creas tu rama de trabajo
+# (editas archivos)
+git status                        # 3. Ves qué cambió
+git add .                         # 4. Preparas todo
+git commit -m "qué hiciste"       # 5. Guardas la foto
+git push -u origin mi-rama        # 6. Subes tu rama
+# (en GitHub) abres un Pull Request
+git checkout main                 # 7. Vuelves a la principal
+git pull                          # 8. Actualizas
+git branch -d mi-rama             # 9. Borras la rama vieja</code></pre>
+
+    <p>No te asustes con todos esos pasos: los iremos viendo uno por uno. Lo importante es saber que <strong>todo gira alrededor del ciclo de 4 pasos</strong>.</p>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../03-instalacion/index.html">← Anterior: Instalación</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../05-estados/index.html">Siguiente: Estados de archivos →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 3 — Instalación y setup</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 03</div>
+      <h1>Instalación y configuración inicial</h1>
+      <p class="chapter-subtitle">Prepara tu computadora: crea la cuenta de GitHub, instala Git y Visual Studio Code, y configura tu identidad para que los commits queden a tu nombre.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Para trabajar con GitHub necesitas tres cosas: una cuenta en la web, Git instalado en tu PC y un editor de código (idealmente Visual Studio Code).</p>
+
+    <h2>Paso 1 — Crear cuenta en GitHub</h2>
+    <p>Ve a <a href="https://github.com" target="_blank">github.com</a> y pulsa <strong>Sign up</strong>. Vas a necesitar correo, usuario y contraseña. Confirma tu correo desde el enlace que te envíen.</p>
+
+    <h2>Paso 2 — Instalar Visual Studio Code</h2>
+    <p>Descárgalo desde <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>. Es el editor más usado y tiene integración nativa con Git, terminal incorporada y miles de extensiones.</p>
+
+    <h2>Paso 3 — Instalar Git</h2>
+    <p>Descárgalo desde <a href="https://git-scm.com/downloads" target="_blank">git-scm.com/downloads</a>. En Windows el instalador te hace varias preguntas. La siguiente tabla resume qué elegir si eres principiante:</p>
+
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Opciones recomendadas en la instalación de Git para Windows</caption>
+      <thead>
+        <tr><th>Pantalla</th><th>Opción recomendada</th><th>Por qué</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Editor por defecto</td><td>Visual Studio Code</td><td>Vim (el default) tiene una curva de aprendizaje frustrante. VS Code es intuitivo.</td></tr>
+        <tr><td>Nombre de rama inicial</td><td>Let Git decide</td><td>Usará <code>master</code>. Es válido. Hoy se prefiere <code>main</code> pero no es obligatorio.</td></tr>
+        <tr><td>Ajuste del PATH</td><td>Git from the command line and 3rd-party software</td><td>Permite usar Git desde CMD, PowerShell y la terminal de VS Code.</td></tr>
+        <tr><td>Cliente SSH</td><td>Use bundled OpenSSH</td><td>Trae su propia versión, compatible con todo.</td></tr>
+        <tr><td>Finales de línea</td><td>Checkout Windows-style, commit Unix-style</td><td>Evita problemas al colaborar con usuarios de Mac/Linux.</td></tr>
+        <tr><td>Credential helper</td><td>Git Credential Manager</td><td>Recuerda tu usuario y contraseña para no escribirlos cada vez.</td></tr>
+        <tr><td>Opciones experimentales</td><td>Ninguna</td><td>Aún no son estables; mejor evitarlas.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Paso 4 — Verificar la instalación</h2>
+    <p>Abre la terminal en VS Code (<kbd>Ctrl</kbd>+<kbd>`</kbd>) y escribe:</p>
+    <pre class="code-block shell" data-lang="bash"><code>git --version</code></pre>
+    <p>Si te muestra algo como <code>git version 2.43.0</code>, la instalación funcionó.</p>
+
+    <h2>Paso 5 — Configurar tu identidad en Git</h2>
+    <p>Git necesita saber quién eres para "firmar" cada commit. Esto se hace una sola vez por computadora:</p>
+
+    <pre class="code-block shell" data-lang="bash"><code>git config --global user.name "Tu Nombre"
+git config --global user.email "tucorreo@ejemplo.com"
+git config --list</code></pre>
+
+    <aside class="callout callout-warn">
+      <h4 class="callout-title">Importante</h4>
+      <p>El correo que pongas en <code>user.email</code> debería ser el mismo de tu cuenta de GitHub. Si no, los commits aparecerán como "no verificados" o atribuidos a una cuenta fantasma.</p>
+    </aside>
+
+    <h2>Paso 6 — (Opcional) Que los repos nuevos usen "main"</h2>
+    <p>Por defecto, Git nombra la rama inicial como <code>master</code>. Hoy se prefiere <code>main</code>:</p>
+    <pre class="code-block shell" data-lang="bash"><code>git config --global init.defaultBranch main</code></pre>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">Listo para empezar</h4>
+      <p>Con esto ya tienes el entorno preparado. En el siguiente capítulo vamos al <strong>flujo de trabajo</strong>: las 4 acciones que vas a repetir cada día.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../02-conceptos/index.html">← Anterior: Conceptos clave</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../04-flujo/index.html">Siguiente: Flujo de trabajo →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

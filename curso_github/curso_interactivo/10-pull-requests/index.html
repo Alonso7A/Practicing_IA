@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 10 — Pull Requests</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 10</div>
+      <h1>Pull Requests: la magia colaborativa</h1>
+      <p class="chapter-subtitle">La pieza central de la colaboración en GitHub. Aprende a proponer cambios, recibir revisión, contribuir a proyectos ajenos con forks y hacer merges responsables.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Un <strong>Pull Request</strong> (o <em>Merge Request</em> en GitLab) es una <em>solicitud formal</em> para que tu rama se fusione con otra (típicamente <code>main</code>). Antes de hacerlo, <strong>otras personas pueden revisar tu código</strong>, dejar comentarios, sugerir cambios y aprobarlo.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant Tú
+    participant GitHub
+    participant Revisor
+
+    Tú->>GitHub: git push origin feature/x
+    Tú->>GitHub: Abrir Pull Request
+    GitHub->>Revisor: Notificación de PR
+    Revisor->>GitHub: Revisa código, deja comentarios
+    GitHub-->>Tú: Notificación de feedback
+    Tú->>GitHub: Push de cambios al mismo branch
+    Revisor->>GitHub: Aprueba PR
+    Tú->>GitHub: Merge a main
+    GitHub-->>Tú: Rama fusionada ✓
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Ciclo de vida típico de un Pull Request, desde el push inicial hasta el merge.</div>
+    </div>
+
+    <h2>Crear un Pull Request paso a paso</h2>
+    <ol>
+      <li>Haz tus cambios en una rama (<em>nunca</em> directamente en <code>main</code>).</li>
+      <li>Sube la rama: <code>git push -u origin feature/x</code></li>
+      <li>Ve a GitHub. Aparecerá un banner amarillo: <em>"Compare &amp; pull request"</em>. Púlsalo.</li>
+      <li>Escribe un <strong>título</strong> claro y una <strong>descripción</strong> que explique <em>qué</em> y <em>por qué</em>.</li>
+      <li>Asigna <em>reviewers</em> si trabajas en equipo.</li>
+      <li>Pulsa <em>Create pull request</em>.</li>
+      <li>Espera la revisión. Si piden cambios, hazlos en tu rama local y haz <code>push</code>: el PR se actualiza solo.</li>
+      <li>Cuando aprueben, pulsa <em>Merge pull request</em> y luego <em>Delete branch</em>.</li>
+    </ol>
+
+    <h2>Hacer un Fork (contribuir a proyectos ajenos)</h2>
+    <ol>
+      <li>En el repo ajeno, pulsa <strong>Fork</strong> (arriba a la derecha). Eso crea una copia en tu cuenta.</li>
+      <li>Clonas <em>tu copia</em>: <code>git clone https://github.com/tu-usuario/repo.git</code></li>
+      <li>Creas una rama, haces cambios, los subes a <em>tu</em> fork.</li>
+      <li>En GitHub, abres un Pull Request <strong>desde tu fork hacia el repo original</strong>.</li>
+      <li>El dueño del proyecto revisa y decide si aceptar tus cambios.</li>
+    </ol>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">El secreto de un buen PR</h4>
+      <p>Los estudios muestran que la calidad de la revisión <strong>cae bruscamente</strong> en PRs de más de 400 líneas — los revisores dejan de leer con atención. <strong>PRs pequeños = mejor código.</strong> Cada PR debe representar un único cambio lógico.</p>
+    </aside>
+
+    <h2>Cómo escribir una buena descripción de PR</h2>
+    <pre class="code-block" data-lang="plantilla"><code>## Qué cambia
+Breve explicación de qué hace este PR.
+
+## Por qué
+Motivación: bug que arregla, feature que añade, problema que resuelve.
+
+## Cómo probarlo
+Pasos para que el revisor verifique que funciona.
+
+## Capturas (si aplica)
+Imágenes antes / después si es un cambio visual.</code></pre>
+
+    <aside class="callout callout-resumen">
+      <h4 class="callout-title">Resumen mental</h4>
+      <p>PR = "Hola, hice estos cambios en mi rama, ¿pueden revisarlos antes de fusionar a main?". Es la conversación oficial sobre el código.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../09-ramas/index.html">← Anterior: Ramas</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../11-estrategias/index.html">Siguiente: Estrategias Flow vs GitFlow →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

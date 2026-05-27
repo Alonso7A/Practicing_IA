@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 5 — Estados de archivos</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 05</div>
+      <h1>Los estados de un archivo en Git</h1>
+      <p class="chapter-subtitle">Untracked, modified, staged, committed, pushed o ignored. Saber identificar cada estado te ahorra horas de confusión.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Cada archivo de tu proyecto pasa por estos estados. Cuando entiendes el ciclo, los mensajes de <code>git status</code> dejan de ser un misterio.</p>
+
+    <div class="diagram">
+      <pre class="mermaid">
+stateDiagram-v2
+    direction LR
+    [*] --> Untracked: archivo nuevo
+    Untracked --> Staged: git add
+    Staged --> Committed: git commit
+    Committed --> Modified: editar archivo
+    Modified --> Staged: git add
+    Committed --> Pushed: git push
+    Pushed --> [*]
+    Modified --> Committed: git restore (descartar)
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Ciclo de estados de un archivo: del nacimiento (untracked) a la nube (pushed).</div>
+    </div>
+
+    <h2>Tabla de estados</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Estados de archivos y cómo identificarlos</caption>
+      <thead>
+        <tr><th>Estado</th><th>Color en VS Code</th><th>Significado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Untracked</strong></td><td>U (verde)</td><td>Git ve el archivo pero no lo está siguiendo. Nunca ha sido agregado.</td></tr>
+        <tr><td><strong>Modified</strong></td><td>M (amarillo)</td><td>El archivo cambió respecto al último commit, pero aún no se ha hecho <code>add</code>.</td></tr>
+        <tr><td><strong>Staged</strong></td><td>A (verde) o ✓</td><td>El archivo está listo para ser incluido en el próximo commit.</td></tr>
+        <tr><td><strong>Committed</strong></td><td>(sin marca)</td><td>Los cambios están guardados en el historial local.</td></tr>
+        <tr><td><strong>Pushed</strong></td><td>(sin marca)</td><td>Los cambios están sincronizados con GitHub.</td></tr>
+        <tr><td><strong>Ignored</strong></td><td>(gris)</td><td>El archivo está en <code>.gitignore</code> — Git lo ignora a propósito.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>¿Por qué hay un estado "staged" entre modified y committed?</h2>
+    <aside class="callout callout-definicion">
+      <h4 class="callout-title">El truco del staging</h4>
+      <p>El <em>staging area</em> existe para que puedas elegir <strong>exactamente qué archivos</strong> entran en cada commit. Si modificaste 10 archivos pero solo 3 corresponden a un cambio lógico, puedes hacer <code>git add</code> sólo de esos 3, commitear, y luego repetir con los siguientes. Eso hace que tu historial sea limpio y entendible.</p>
+    </aside>
+
+    <h2>Comandos para moverse entre estados</h2>
+    <pre class="code-block shell" data-lang="bash"><code># De untracked / modified  →  staged
+git add archivo.txt
+git add .                        # todos los modificados
+
+# De staged  →  modified (quitar del staging sin perder cambios)
+git restore --staged archivo.txt
+
+# De modified  →  committed (descartando cambios)
+git restore archivo.txt          # ⚠️ pierdes los cambios
+
+# De staged  →  committed
+git commit -m "mensaje"
+
+# De committed  →  pushed
+git push
+
+# Marcar como ignored (no se hace con comando: edita .gitignore)</code></pre>
+
+    <aside class="callout callout-warn">
+      <h4 class="callout-title">Cuidado con git restore</h4>
+      <p><code>git restore archivo</code> <strong>borra</strong> los cambios no commiteados. No hay papelera de reciclaje. Antes de usarlo, asegúrate de no necesitar lo que vas a descartar.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../04-flujo/index.html">← Anterior: Flujo de trabajo</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../06-repo-web/index.html">Siguiente: Crear repo en la web →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

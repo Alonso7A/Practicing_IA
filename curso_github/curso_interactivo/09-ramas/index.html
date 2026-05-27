@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 9 — Ramas (branches)</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 09</div>
+      <h1>Ramas (branches): el corazón de Git</h1>
+      <p class="chapter-subtitle">Una línea paralela de desarrollo para probar ideas sin romper lo que ya funciona. Aprende a crear, cambiar, fusionar y borrar ramas con seguridad.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Una rama es una <strong>línea paralela de desarrollo</strong>. Te permite probar ideas, desarrollar funciones nuevas o arreglar bugs sin tocar el código que ya funciona.</p>
+
+    <aside class="callout callout-definicion">
+      <h4 class="callout-title">Imagina esto</h4>
+      <p>Tu rama principal (<code>main</code>) es como el manuscrito final de un libro. Cuando quieres agregar un capítulo nuevo, no escribes directamente sobre el original: sacas una <em>copia</em> (<strong>rama</strong>), escribes ahí, lo revisas, y solo cuando estás seguro, lo agregas al manuscrito final (<strong>merge</strong>).</p>
+    </aside>
+
+    <div class="diagram">
+      <pre class="mermaid">
+gitGraph
+    commit id: "inicio"
+    commit id: "add login"
+    branch feature/dark-mode
+    checkout feature/dark-mode
+    commit id: "estilos dark"
+    commit id: "toggle btn"
+    checkout main
+    commit id: "fix bug"
+    merge feature/dark-mode
+    commit id: "release v1.1"
+      </pre>
+      <div class="diagram-caption"><strong>Fig. 1.</strong> Una rama de <em>feature</em> nace de <code>main</code>, evoluciona en paralelo y se fusiona cuando está lista.</div>
+    </div>
+
+    <h2>Crear y trabajar con ramas</h2>
+    <pre class="code-block shell" data-lang="bash"><code># Ver en qué rama estás y qué ramas existen
+git branch
+
+# Crear y cambiar a una rama nueva
+git checkout -b feature/login
+
+# Hacer cambios, agregar, commit...
+git add .
+git commit -m "implementa formulario de login"
+
+# Subir la rama nueva al remoto
+git push -u origin feature/login
+
+# Volver a la rama principal
+git checkout main
+
+# Fusionar la rama de feature en main
+git merge feature/login
+
+# Borrar la rama ya fusionada (opcional)
+git branch -d feature/login</code></pre>
+
+    <aside class="callout callout-warn">
+      <h4 class="callout-title">Regla de oro</h4>
+      <p><strong>Nunca trabajes directamente en <code>main</code></strong> en proyectos serios. Siempre crea una rama, haz tus cambios ahí, y luego pide que se fusione vía Pull Request. Esto protege la rama principal de errores y permite revisión.</p>
+    </aside>
+
+    <h2>En VS Code</h2>
+    <p>Abajo a la izquierda ves el nombre de la rama actual (ej: <code>main</code>). Clic ahí → puedes:</p>
+    <ul>
+      <li>Cambiar de rama.</li>
+      <li>Crear una nueva.</li>
+      <li>Ver todas las que existen.</li>
+    </ul>
+
+    <h2>Convenciones de nombres de ramas</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <thead><tr><th>Prefijo</th><th>Para qué</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><code>feature/</code></td><td>Nueva funcionalidad</td><td><code>feature/dark-mode</code></td></tr>
+        <tr><td><code>fix/</code> o <code>bugfix/</code></td><td>Corrección de error</td><td><code>fix/login-validation</code></td></tr>
+        <tr><td><code>hotfix/</code></td><td>Corrección urgente en producción</td><td><code>hotfix/security-patch</code></td></tr>
+        <tr><td><code>refactor/</code></td><td>Reescribir sin cambiar comportamiento</td><td><code>refactor/auth-service</code></td></tr>
+        <tr><td><code>docs/</code></td><td>Solo documentación</td><td><code>docs/readme-install</code></td></tr>
+        <tr><td><code>test/</code></td><td>Agregar pruebas</td><td><code>test/cart-checkout</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../08-comandos/index.html">← Anterior: Comandos esenciales</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../10-pull-requests/index.html">Siguiente: Pull Requests →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

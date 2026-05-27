@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 6 — Crear un repo desde la web</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 06</div>
+      <h1>Crear un repositorio desde la web de GitHub</h1>
+      <p class="chapter-subtitle">Aprende a crear repos, subir archivos arrastrándolos, editar desde el navegador y conectarlo todo a tu carpeta local. Sin tocar la terminal si no quieres.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>Hay dos caminos para empezar un proyecto: crear el repo <strong>en GitHub primero</strong> y luego clonarlo, o crearlo <strong>localmente</strong> y luego conectarlo. Vamos a empezar por el camino más limpio: GitHub primero.</p>
+
+    <h2>Pasos para crear un repo en GitHub</h2>
+    <ol>
+      <li><strong>PASO 1:</strong> Inicia sesión en <a href="https://github.com" target="_blank">github.com</a>. En la esquina superior izquierda pulsa el icono de las tres rayas y selecciona <em>Repositories</em>.</li>
+      <li><strong>PASO 2:</strong> Pulsa <em>New repository</em>. Escribe un <strong>Repository name</strong> (sin espacios, usa guiones: <code>mi-proyecto</code>) y una <strong>Description</strong> breve.</li>
+      <li><strong>PASO 3:</strong> Elige <em>Public</em> o <em>Private</em>. Público lo ve todo el mundo; privado solo tú e invitados. Para empezar, <strong>público</strong> es buena opción (GitHub Pages necesita repos públicos en el plan gratuito).</li>
+      <li><strong>PASO 4:</strong> Marca <em>Add a README file</em> para que el repo no esté vacío. Opcionalmente agrega <em>.gitignore</em> según el lenguaje, y elige una <em>License</em> si vas a compartir (MIT es la más común).</li>
+      <li><strong>PASO 5:</strong> Pulsa <em>Create repository</em>. ¡Listo! GitHub te muestra la URL del repo: cópiala.</li>
+    </ol>
+
+    <h2>Subir archivos arrastrándolos (sin terminal)</h2>
+    <p>La forma más fácil sin tocar comandos:</p>
+    <ol>
+      <li>Entra a tu repo en GitHub.</li>
+      <li>Botón <strong>Add file</strong> → <strong>Upload files</strong>.</li>
+      <li><strong>Arrastra</strong> tus archivos o carpetas a la zona marcada.</li>
+      <li>Abajo escribe un <strong>commit message</strong>, por ejemplo: <em>"Agrego primera versión del proyecto"</em>.</li>
+      <li>Pulsa <strong>Commit changes</strong>.</li>
+    </ol>
+
+    <h2>Editar archivos directamente en la web</h2>
+    <ol>
+      <li>Abre cualquier archivo en tu repo.</li>
+      <li>Pulsa el icono del <strong>lápiz ✏️</strong> arriba a la derecha.</li>
+      <li>Edita el contenido.</li>
+      <li>Abajo escribe un commit message y dale <strong>Commit changes</strong>.</li>
+    </ol>
+
+    <h2>Crear una carpeta nueva desde la web (truco)</h2>
+    <p>Sí, en GitHub puedes crear carpetas, pero hay un truco: cuando pulsas <em>Add file → Create new file</em>, en el campo del nombre escribe:</p>
+    <pre class="code-block" data-lang="ruta"><code>mi-carpeta/archivo.md</code></pre>
+    <p>El <code>/</code> es lo que convierte <em>mi-carpeta</em> en carpeta. Luego en VS Code haz <code>git pull</code> para que aparezca localmente.</p>
+
+    <h2>Conectar tu carpeta local con el repo recién creado</h2>
+    <p>Abre tu carpeta en VS Code, abre la terminal (<kbd>Ctrl</kbd>+<kbd>`</kbd>) y ejecuta:</p>
+
+    <pre class="code-block shell" data-lang="bash"><code># Inicializar Git en la carpeta
+git init
+
+# Conectar al repo remoto (pega la URL que copiaste)
+git remote add origin https://github.com/tu-usuario/tu-repo.git
+
+# Bajar el README/gitignore que se creó en GitHub
+git pull origin main
+
+# Crear archivos, agregar, commit y push
+git add .
+git commit -m "primer commit local"
+git push --set-upstream origin main</code></pre>
+
+    <aside class="callout callout-tip">
+      <h4 class="callout-title">Cuando aparece error en el primer push</h4>
+      <p>Si te sale <code>error: failed to push some refs</code>, suele ser porque el remoto tiene commits que tú no tienes localmente (el README). Solución: <code>git pull origin main --allow-unrelated-histories</code> y vuelve a hacer <code>git push</code>.</p>
+    </aside>
+
+    <h2>Botones importantes en la página del repo</h2>
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Qué hace cada botón en la interfaz de GitHub</caption>
+      <thead><tr><th>Botón</th><th>Para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Code</strong></td><td>Te da la URL para clonar el repo o descargarlo en ZIP.</td></tr>
+        <tr><td><strong>Issues</strong></td><td>Lista de bugs, tareas o ideas pendientes.</td></tr>
+        <tr><td><strong>Pull requests</strong></td><td>Solicitudes de cambios pendientes de revisión.</td></tr>
+        <tr><td><strong>Actions</strong></td><td>Automatizaciones (tests, despliegues, CI/CD).</td></tr>
+        <tr><td><strong>Projects</strong></td><td>Tableros tipo Trello para organizar tareas.</td></tr>
+        <tr><td><strong>Wiki</strong></td><td>Documentación extendida del proyecto.</td></tr>
+        <tr><td><strong>Settings</strong></td><td>Configuración (visibilidad, colaboradores, etc.).</td></tr>
+        <tr><td><strong>Star ⭐</strong></td><td>Marcar el repo como favorito.</td></tr>
+        <tr><td><strong>Fork</strong></td><td>Hacer una copia del repo en tu cuenta.</td></tr>
+        <tr><td><strong>Watch</strong></td><td>Recibir notificaciones cuando algo cambie en el repo.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../05-estados/index.html">← Anterior: Estados de archivos</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../07-vscode/index.html">Siguiente: GitHub en VS Code →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>

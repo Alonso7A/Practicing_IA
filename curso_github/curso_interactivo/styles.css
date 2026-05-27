@@ -1,0 +1,679 @@
+/* =====================================================================
+ * Curso Interactivo GitHub — styles.css
+ * Paleta IEEE sobria (azul marino + grises + naranja).
+ * Estilos compartidos: menú principal + capítulos.
+ * ===================================================================== */
+
+:root {
+    --ieee-blue:        #1F3A68;
+    --ieee-blue-dark:   #0F1F3D;
+    --ieee-blue-light:  #E8EEF7;
+    --ieee-gray:        #4A4A4A;
+    --ieee-gray-light:  #F5F5F5;
+    --ieee-text:        #1F1F1F;
+    --ieee-bg:          #FFFFFF;
+    --ieee-warn:        #B86E00;
+    --ieee-ok:          #1B5E20;
+    --ieee-err:         #8B1A1A;
+
+    --ieee-font-body:   "Times New Roman", Georgia, "Liberation Serif", serif;
+    --ieee-font-head:   "Helvetica Neue", Arial, "Liberation Sans", sans-serif;
+    --ieee-font-mono:   "JetBrains Mono", "Consolas", "Liberation Mono", monospace;
+
+    --ieee-radius:      6px;
+    --ieee-shadow:      0 1px 3px rgba(0,0,0,0.08);
+    --ieee-shadow-lg:   0 6px 22px rgba(15,31,61,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: var(--ieee-font-body);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ieee-text);
+    background: var(--ieee-bg);
+}
+
+/* =====================================================================
+ * MENÚ PRINCIPAL (landing del curso)
+ * ===================================================================== */
+
+.menu-page .hero-menu {
+    background: linear-gradient(135deg, var(--ieee-blue) 0%, var(--ieee-blue-dark) 100%);
+    color: #fff;
+    padding: 4rem 2rem 5rem;
+    text-align: center;
+    border-bottom: 5px solid var(--ieee-warn);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-page .hero-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0, transparent 35%),
+        radial-gradient(circle at 80% 70%, rgba(184,110,0,0.18) 0, transparent 40%);
+    pointer-events: none;
+}
+
+.menu-page .hero-menu > * { position: relative; z-index: 1; }
+
+.menu-page .hero-menu .eyebrow {
+    font-family: var(--ieee-font-head);
+    font-size: 0.78rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #c7d3e6;
+    margin-bottom: 0.8rem;
+}
+
+.menu-page .hero-menu h1 {
+    color: #fff;
+    font-family: var(--ieee-font-head);
+    font-size: 2.6rem;
+    font-weight: 800;
+    margin: 0 0 0.7rem;
+    letter-spacing: -0.01em;
+}
+
+.menu-page .hero-menu p.lede {
+    font-family: var(--ieee-font-head);
+    font-size: 1.1rem;
+    color: #d8e3f5;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.menu-page .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    font-family: var(--ieee-font-head);
+}
+
+.menu-page .hero-stats .stat {
+    text-align: center;
+}
+.menu-page .hero-stats .stat-num {
+    display: block;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+}
+.menu-page .hero-stats .stat-label {
+    display: block;
+    font-size: 0.78rem;
+    color: #b8c8e0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+}
+
+/* Sección del menú con las tarjetas */
+.menu-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.menu-section h2 {
+    font-family: var(--ieee-font-head);
+    font-size: 1.6rem;
+    color: var(--ieee-blue-dark);
+    text-align: center;
+    margin: 0 0 0.5rem;
+    border: none;
+    padding: 0;
+}
+.menu-section .section-sub {
+    text-align: center;
+    color: var(--ieee-gray);
+    font-family: var(--ieee-font-head);
+    margin: 0 0 2.5rem;
+}
+
+.chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.3rem;
+}
+
+.chapter-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e3e7ee;
+    border-radius: var(--ieee-radius);
+    box-shadow: var(--ieee-shadow);
+    text-decoration: none;
+    color: inherit;
+    padding: 1.4rem 1.4rem 1.2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chapter-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--ieee-blue);
+    transition: background 0.2s ease, height 0.2s ease;
+}
+
+.chapter-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ieee-shadow-lg);
+    border-color: var(--ieee-blue);
+}
+.chapter-card:hover::before {
+    background: var(--ieee-warn);
+    height: 5px;
+}
+
+.chapter-card .chapter-num {
+    font-family: var(--ieee-font-head);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ieee-warn);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+}
+
+.chapter-card .chapter-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.chapter-card h3 {
+    font-family: var(--ieee-font-head);
+    font-size: 1.15rem;
+    color: var(--ieee-blue-dark);
+    margin: 0 0 0.5rem;
+    border: none;
+    padding: 0;
+    line-height: 1.3;
+}
+
+.chapter-card p.card-sub {
+    font-family: var(--ieee-font-head);
+    font-size: 0.88rem;
+    color: var(--ieee-gray);
+    margin: 0;
+    text-align: left;
+    line-height: 1.45;
+    flex: 1;
+}
+
+.chapter-card .card-go {
+    margin-top: 1rem;
+    font-family: var(--ieee-font-head);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ieee-blue);
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: gap 0.2s ease;
+}
+.chapter-card:hover .card-go { gap: 0.8rem; color: var(--ieee-warn); }
+
+.menu-footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: var(--ieee-font-head);
+    font-size: 0.82rem;
+    color: var(--ieee-gray);
+    border-top: 1px solid var(--ieee-gray-light);
+    background: var(--ieee-gray-light);
+}
+
+/* =====================================================================
+ * PÁGINA DE CAPÍTULO
+ * ===================================================================== */
+
+.chapter-page .chapter-header {
+    background: linear-gradient(135deg, var(--ieee-blue) 0%, var(--ieee-blue-dark) 100%);
+    color: #fff;
+    padding: 2rem 2rem 2.6rem;
+    border-bottom: 4px solid var(--ieee-warn);
+}
+
+.chapter-page .header-inner {
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.5rem 1rem;
+    border-radius: var(--ieee-radius);
+    font-family: var(--ieee-font-head);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.18s ease;
+    margin-bottom: 1.4rem;
+}
+.back-button:hover {
+    background: var(--ieee-warn);
+    border-color: var(--ieee-warn);
+    color: #fff;
+    transform: translateX(-3px);
+}
+
+.chapter-page .chapter-label {
+    font-family: var(--ieee-font-head);
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #c7d3e6;
+    margin-bottom: 0.5rem;
+}
+.chapter-page .chapter-header h1 {
+    color: #fff;
+    font-family: var(--ieee-font-head);
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.7rem;
+    line-height: 1.2;
+    border: none;
+    padding: 0;
+}
+.chapter-page .chapter-subtitle {
+    font-family: var(--ieee-font-head);
+    font-size: 1.05rem;
+    color: #d8e3f5;
+    margin: 0;
+    max-width: 760px;
+    text-indent: 0;
+}
+
+.chapter-page main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 3rem;
+}
+
+/* Navegación entre capítulos (pie) */
+.chapter-nav {
+    max-width: 920px;
+    margin: 2rem auto 4rem;
+    padding: 1.4rem 2rem;
+    border-top: 2px solid var(--ieee-gray-light);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.chapter-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    font-family: var(--ieee-font-head);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--ieee-radius);
+    transition: all 0.18s ease;
+    border: 1px solid var(--ieee-blue-light);
+    color: var(--ieee-blue-dark);
+    background: #fff;
+}
+.chapter-nav a:hover {
+    background: var(--ieee-blue);
+    color: #fff;
+    border-color: var(--ieee-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--ieee-shadow);
+}
+.chapter-nav a.nav-home {
+    background: var(--ieee-blue);
+    color: #fff;
+    border-color: var(--ieee-blue);
+}
+.chapter-nav a.nav-home:hover {
+    background: var(--ieee-warn);
+    border-color: var(--ieee-warn);
+}
+.chapter-nav a.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* =====================================================================
+ * HEADERS internos de cada capítulo
+ * ===================================================================== */
+
+h1, h2, h3, h4 {
+    font-family: var(--ieee-font-head);
+    color: var(--ieee-blue-dark);
+    line-height: 1.25;
+    page-break-after: avoid;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 2.2rem 0 1rem;
+    padding: 0.3rem 0 0.4rem 0.7rem;
+    border-left: 5px solid var(--ieee-blue);
+    border-bottom: 0.5px solid var(--ieee-gray-light);
+}
+
+h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 1.6rem 0 0.7rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--ieee-blue);
+}
+
+h4 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--ieee-gray);
+    margin: 1.3rem 0 0.5rem;
+}
+h4::before {
+    content: "▸ ";
+    color: var(--ieee-blue);
+}
+
+p {
+    margin: 0 0 0.9em 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong { color: var(--ieee-blue-dark); }
+em     { color: var(--ieee-gray); font-style: italic; }
+
+a {
+    color: var(--ieee-blue);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ieee-blue-light);
+    transition: all 0.15s ease;
+}
+a:hover {
+    color: var(--ieee-blue-dark);
+    border-bottom-color: var(--ieee-blue);
+}
+
+ul, ol {
+    margin: 0.5em 0 1em 1.5em;
+    padding: 0;
+}
+li { margin-bottom: 0.35em; }
+li > strong:first-child { color: var(--ieee-blue-dark); }
+
+/* =====================================================================
+ * CALLOUTS (cajas tipo definición / tip / advertencia)
+ * ===================================================================== */
+
+.callout {
+    margin: 1.3em 0;
+    padding: 0;
+    border-radius: var(--ieee-radius);
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--ieee-gray-light);
+    box-shadow: var(--ieee-shadow);
+    page-break-inside: avoid;
+}
+
+.callout-title {
+    margin: 0;
+    padding: 0.55em 1em;
+    font-family: var(--ieee-font-head);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.callout > :not(.callout-title) { padding-left: 1em; padding-right: 1em; }
+.callout > :not(.callout-title):first-of-type { padding-top: 0.8em; }
+.callout > :not(.callout-title):last-child    { padding-bottom: 0.8em; }
+.callout p { text-indent: 0; margin: 0 0 0.5em; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-resumen   { border-color: var(--ieee-blue); background: var(--ieee-blue-light); }
+.callout-resumen .callout-title { background: var(--ieee-blue); }
+.callout-resumen .callout-title::before { content: "ℹ  "; }
+
+.callout-definicion { border-color: var(--ieee-blue-dark); border-left-width: 4px; }
+.callout-definicion .callout-title { background: var(--ieee-blue-dark); }
+.callout-definicion .callout-title::before { content: "📖  "; }
+
+.callout-warn { border-color: var(--ieee-warn); background: #FFF8EE; }
+.callout-warn .callout-title { background: var(--ieee-warn); }
+.callout-warn .callout-title::before { content: "⚠  "; }
+
+.callout-tip { border-color: var(--ieee-ok); border-left-width: 4px; background: #F0F7F0; }
+.callout-tip .callout-title { background: var(--ieee-ok); }
+.callout-tip .callout-title::before { content: "💡  "; }
+
+.callout-error { border-color: var(--ieee-err); border-left-width: 4px; background: #FBF0F0; }
+.callout-error .callout-title { background: var(--ieee-err); }
+.callout-error .callout-title::before { content: "✖  "; }
+
+/* =====================================================================
+ * TABLAS
+ * ===================================================================== */
+
+table.ieee-table {
+    width: 100%;
+    margin: 1.4em 0;
+    border-collapse: collapse;
+    font-family: var(--ieee-font-head);
+    font-size: 0.9rem;
+    background: #fff;
+}
+table.ieee-table caption {
+    caption-side: top;
+    padding: 0.6em 0;
+    font-family: var(--ieee-font-head);
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--ieee-blue-dark);
+    text-align: center;
+}
+table.ieee-table thead th {
+    padding: 0.65em 0.9em;
+    text-align: left;
+    font-weight: 700;
+    color: #fff;
+    background: var(--ieee-blue);
+    border: none;
+}
+table.ieee-table tbody td {
+    padding: 0.55em 0.9em;
+    border: none;
+    color: var(--ieee-text);
+    vertical-align: top;
+    border-bottom: 0.5px solid var(--ieee-gray-light);
+}
+table.ieee-table tbody tr:nth-child(even) td { background: var(--ieee-gray-light); }
+table.ieee-table tbody tr:last-child td { border-bottom: 1.5px solid var(--ieee-blue-dark); }
+table.ieee-table tbody td:first-child code {
+    color: var(--ieee-blue);
+    font-weight: 700;
+}
+.table-wrap { overflow-x: auto; margin: 1.4em 0; }
+.table-wrap > table.ieee-table { margin: 0; }
+
+/* =====================================================================
+ * CÓDIGO
+ * ===================================================================== */
+
+code, kbd, samp {
+    font-family: var(--ieee-font-mono);
+    font-size: 0.88em;
+    color: var(--ieee-blue-dark);
+    background: var(--ieee-gray-light);
+    padding: 0.08em 0.4em;
+    border-radius: 3px;
+    border: 0.5px solid #e0e4ea;
+}
+
+pre.code-block {
+    position: relative;
+    margin: 1.2em 0;
+    padding: 2.2em 1em 1em 1em;
+    background: #fcfcfd;
+    border: 1px solid var(--ieee-gray-light);
+    border-left: 3px solid var(--ieee-blue);
+    border-radius: var(--ieee-radius);
+    box-shadow: var(--ieee-shadow);
+    overflow-x: auto;
+    page-break-inside: avoid;
+}
+pre.code-block code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--ieee-text);
+    font-size: 0.86rem;
+    line-height: 1.55;
+    white-space: pre;
+}
+pre.code-block[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0; right: 0;
+    font-family: var(--ieee-font-head);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: var(--ieee-blue);
+    padding: 0.2em 0.7em;
+    border-radius: 0 var(--ieee-radius) 0 var(--ieee-radius);
+}
+pre.code-block.shell {
+    background: #1b1f24;
+    border-left-color: var(--ieee-warn);
+}
+pre.code-block.shell code { color: #e6edf3; }
+pre.code-block.shell::before { background: var(--ieee-warn); }
+
+/* =====================================================================
+ * DIAGRAMAS MERMAID
+ * ===================================================================== */
+
+.diagram {
+    margin: 1.8em 0;
+    padding: 1.2em;
+    background: #fff;
+    border: 1px solid var(--ieee-gray-light);
+    border-radius: var(--ieee-radius);
+    box-shadow: var(--ieee-shadow);
+    text-align: center;
+    overflow-x: auto;
+}
+.diagram-caption {
+    margin-top: 0.8em;
+    font-family: var(--ieee-font-head);
+    font-size: 0.85rem;
+    color: var(--ieee-gray);
+    text-align: center;
+}
+.diagram-caption strong { color: var(--ieee-blue-dark); }
+.mermaid { display: flex; justify-content: center; }
+
+/* Teclas */
+kbd {
+    display: inline-block;
+    padding: 0.15em 0.55em;
+    font-size: 0.82em;
+    font-family: var(--ieee-font-head);
+    font-weight: 600;
+    color: #fff;
+    background: var(--ieee-gray);
+    border: 1px solid var(--ieee-blue-dark);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+/* Tarjetas de conceptos */
+.concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1.5em 0;
+}
+.concept-card {
+    padding: 1.1em 1.2em;
+    background: #fff;
+    border: 1px solid var(--ieee-gray-light);
+    border-top: 3px solid var(--ieee-blue);
+    border-radius: var(--ieee-radius);
+    box-shadow: var(--ieee-shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.concept-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.concept-card h4 {
+    margin: 0 0 0.5em;
+    color: var(--ieee-blue-dark);
+    font-size: 1.05rem;
+}
+.concept-card h4::before { content: ""; }
+.concept-card p {
+    font-size: 0.92rem;
+    color: var(--ieee-gray);
+    margin: 0;
+    text-indent: 0;
+    text-align: left;
+}
+
+/* =====================================================================
+ * RESPONSIVO
+ * ===================================================================== */
+
+@media (max-width: 900px) {
+    .menu-page .hero-menu { padding: 3rem 1.2rem 3.5rem; }
+    .menu-page .hero-menu h1 { font-size: 2rem; }
+    .menu-section { padding: 2.5rem 1.2rem; }
+    .chapter-page main { padding: 2rem 1.2rem 2rem; }
+    .chapter-page .chapter-header { padding: 1.5rem 1.2rem 2rem; }
+    .chapter-page .chapter-header h1 { font-size: 1.6rem; }
+    .chapter-nav { padding: 1rem 1.2rem; }
+}
+
+@media (max-width: 500px) {
+    .menu-page .hero-menu h1 { font-size: 1.6rem; }
+    .chapter-page .chapter-header h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.05rem; }
+    .chapter-nav a { padding: 0.55rem 0.8rem; font-size: 0.82rem; }
+}

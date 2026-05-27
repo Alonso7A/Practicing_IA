@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capítulo 12 — Seguridad: SSH y PAT</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="chapter-page">
+
+  <header class="chapter-header">
+    <div class="header-inner">
+      <a href="../index.html" class="back-button">← Volver al menú</a>
+      <div class="chapter-label">Capítulo 12</div>
+      <h1>Seguridad: SSH y Personal Access Tokens</h1>
+      <p class="chapter-subtitle">Desde 2021 GitHub no acepta tu contraseña real para operaciones desde la terminal. Aprende a autenticarte con SSH o con un PAT, y a evitar los errores fatales.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <p>GitHub ya no acepta tu contraseña real para operaciones desde la terminal. Necesitas <strong>SSH</strong> (recomendado) o un <strong>Personal Access Token (PAT)</strong>.</p>
+
+    <h2>Opción A: Claves SSH (la más cómoda a largo plazo)</h2>
+    <p>SSH usa <em>criptografía de clave pública</em>: tu PC genera una pareja de llaves (pública + privada). La pública se la das a GitHub, la privada nunca sale de tu PC. Cuando haces push, GitHub te reconoce automáticamente sin pedirte contraseña.</p>
+
+    <pre class="code-block shell" data-lang="bash"><code># Generar par de llaves (acepta los defaults pulsando Enter)
+ssh-keygen -t rsa -b 4096 -C "tucorreo@ejemplo.com"
+
+# Iniciar el agente SSH
+eval "$(ssh-agent -s)"
+
+# Agregar tu llave privada al agente
+ssh-add ~/.ssh/id_rsa
+
+# Copiar la llave pública (lo que pegarás en GitHub)
+cat ~/.ssh/id_rsa.pub</code></pre>
+
+    <p><strong>Luego en GitHub:</strong></p>
+    <ol>
+      <li>Foto de perfil → <em>Settings</em>.</li>
+      <li>Menú izquierdo → <em>SSH and GPG keys</em>.</li>
+      <li><em>New SSH key</em>: en <em>Title</em> pon el nombre de tu dispositivo (ej: "Laptop personal"), en <em>Key type</em> deja "Authentication Key", y en el cuadro pega lo que te dio <code>cat ~/.ssh/id_rsa.pub</code>.</li>
+      <li>Pulsa <em>Add SSH key</em>.</li>
+    </ol>
+
+    <h2>Opción B: Personal Access Token (PAT)</h2>
+    <p>Es una "contraseña alternativa" con permisos específicos y caducidad. Útil cuando no puedes usar SSH (ej: en cuentas corporativas) o cuando solo necesitas autenticarte una vez.</p>
+
+    <div class="table-wrap">
+    <table class="ieee-table">
+      <caption>Crear un Personal Access Token (clásico)</caption>
+      <thead><tr><th>Paso</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Foto de perfil → <em>Settings</em></td></tr>
+        <tr><td>2</td><td>Menú izquierdo (abajo) → <em>Developer settings</em></td></tr>
+        <tr><td>3</td><td><em>Personal access tokens</em> → <em>Tokens (classic)</em></td></tr>
+        <tr><td>4</td><td><em>Generate new token (classic)</em></td></tr>
+        <tr><td>5</td><td>En <em>Note</em>: descripción (ej: "Token laptop personal")</td></tr>
+        <tr><td>6</td><td>En <em>Expiration</em>: 60 o 90 días recomendado</td></tr>
+        <tr><td>7</td><td>En <em>Scopes</em>: marca <code>repo</code> (control total de repos)</td></tr>
+        <tr><td>8</td><td><em>Generate token</em> → <strong>cópialo ahora</strong> (no podrás verlo otra vez)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Cuando hagas <code>git push</code> y te pida contraseña, en lugar de tu contraseña real pega el token:</p>
+
+    <pre class="code-block shell" data-lang="bash"><code>Username for 'https://github.com': tu-usuario
+Password for 'https://tu-usuario@github.com': pega-el-token-aqui</code></pre>
+
+    <aside class="callout callout-error">
+      <h4 class="callout-title">Errores que JAMÁS debes cometer</h4>
+      <p><strong>1.</strong> Compartir tu clave privada (<code>id_rsa</code>) — es como dar tu contraseña.</p>
+      <p><strong>2.</strong> Subir tu PAT o tu archivo <code>.env</code> a un repo público — los bots los detectan en minutos.</p>
+      <p><strong>3.</strong> Pegar tu API key en código JavaScript que vaya al navegador — cualquiera la ve con F12.</p>
+      <p><strong>Solución preventiva:</strong> usa <code>.gitignore</code> desde el primer commit.</p>
+    </aside>
+
+    <aside class="callout callout-resumen">
+      <h4 class="callout-title">¿SSH o PAT?</h4>
+      <p>Si vas a usar GitHub mucho en esta computadora: configura SSH una vez y olvídate. Si es algo puntual o no tienes permisos en la máquina: PAT.</p>
+    </aside>
+
+  </main>
+
+  <nav class="chapter-nav">
+    <a href="../11-estrategias/index.html">← Anterior: Estrategias</a>
+    <a href="../index.html" class="nav-home">🏠 Inicio</a>
+    <a href="../13-tips/index.html">Siguiente: Tips y buenas prácticas →</a>
+  </nav>
+
+<script src="../script.js"></script>
+</body>
+</html>
