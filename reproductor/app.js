@@ -50,6 +50,42 @@ function metaFromAudius(t) {
   };
 }
 
+/* ===================== Deezer API (catálogo comercial, vista previa 30s) =====================
+   Deezer no envía cabeceras CORS, así que usamos JSONP (output=jsonp) para
+   poder consultarlo desde una página estática sin servidor. */
+function jsonp(url) {
+  return new Promise((resolve, reject) => {
+    const cb = 'dz_cb_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    let done = false;
+    const cleanup = () => { delete window[cb]; script.remove(); };
+    window[cb] = data => { done = true; resolve(data); cleanup(); };
+    script.onerror = () => { if (!done) { cleanup(); reject(new Error('jsonp error')); } };
+    script.src = url + (url.includes('?') ? '&' : '?') + 'output=jsonp&callback=' + cb;
+    document.body.appendChild(script);
+    setTimeout(() => { if (!done) { cleanup(); reject(new Error('timeout')); } }, 9000);
+  });
+}
+
+async function searchDeezer(query) {
+  const data = await jsonp('https://api.deezer.com/search?q=' + encodeURIComponent(query));
+  return (data && data.data) || [];
+}
+
+function metaFromDeezer(t) {
+  return {
+    id: 'deezer:' + t.id,
+    source: 'deezer',
+    previewUrl: t.preview,
+    title: t.title || 'Sin título',
+    artist: (t.artist && t.artist.name) || 'Desconocido',
+    artwork: (t.album && (t.album.cover_medium || t.album.cover_small)) || null,
+    duration: t.duration || 0,
+    preview: true,
+    stored: false
+  };
+}
+
 /* ===================== IndexedDB (audio offline) ===================== */
 const DB_NAME = 'reproductor-db';
 const STORE = 'audio';
@@ -164,6 +200,7 @@ async function playMeta(meta, newQueue) {
   }
   if (!src) {
     if (meta.source === 'audius') src = streamUrl(meta.audiusId);
+    else if (meta.source === 'deezer') src = meta.previewUrl;
     else { toast('No se encontró el audio de esta canción.'); return; }
   }
 
@@ -323,6 +360,25 @@ async function handleFiles(fileList) {
 }
 
 /* ===================== Render: Buscar ===================== */
+function searchActions(m) {
+  if (m.source === 'deezer') {
+    return `
+        <button class="icon-btn play" data-act="play" title="Vista previa 30s">▶️ 30s</button>
+        <button class="icon-btn add"  data-act="add"  title="Agregar a biblioteca (vista previa)">➕</button>`;
+  }
+  return `
+        <button class="icon-btn play" data-act="play" title="Reproducir completa">▶️</button>
+        <button class="icon-btn add"  data-act="add"  title="Agregar a biblioteca">➕</button>
+        <button class="icon-btn dl"   data-act="dl"   title="Descargar a mi PC">⬇️</button>
+        <button class="icon-btn save" data-act="save" title="Guardar en la página">💾</button>`;
+}
+
+function sourceBadge(m) {
+  if (m.source === 'deezer') return '<span class="badge stream">Deezer · 30s</span>';
+  if (m.source === 'audius') return '<span class="badge local">Audius · completa</span>';
+  return '';
+}
+
 function renderSearch(metas) {
   const box = $('#search-results');
   box.innerHTML = metas.map(m => `
@@ -330,21 +386,18 @@ function renderSearch(metas) {
       <div class="art"${artStyle(m.artwork)}>${m.artwork ? '' : '🎵'}</div>
       <div class="t-title">${esc(m.title)}</div>
       <div class="t-artist">${esc(m.artist)}</div>
-      <div class="t-actions">
-        <button class="icon-btn play" data-act="play" title="Reproducir">▶️</button>
-        <button class="icon-btn add"  data-act="add"  title="Agregar a biblioteca">➕</button>
-        <button class="icon-btn dl"   data-act="dl"   title="Descargar a mi PC">⬇️</button>
-        <button class="icon-btn save" data-act="save" title="Guardar en la página">💾</button>
-      </div>
+      ${sourceBadge(m)}
+      <div class="t-actions">${searchActions(m)}</div>
     </div>`).join('');
 }
 
 /* ===================== Render: Biblioteca ===================== */
 function libRow(m) {
-  const badge = m.source === 'local'
-    ? '<span class="badge local">Mi archivo</span>'
-    : (m.stored ? '<span class="badge offline">💾 Guardada</span>'
-                : '<span class="badge stream">☁️ Streaming</span>');
+  const badge =
+    m.source === 'local'  ? '<span class="badge local">Mi archivo</span>' :
+    m.source === 'deezer' ? '<span class="badge stream">Deezer · 30s</span>' :
+    m.stored              ? '<span class="badge offline">💾 Guardada</span>' :
+                            '<span class="badge stream">☁️ Streaming</span>';
   const dlBtns = m.source === 'audius' ? `
         <button class="icon-btn dl"   data-act="dl"   title="Descargar a mi PC">⬇️</button>
         ${m.stored ? '' : '<button class="icon-btn save" data-act="save" title="Guardar en la página">💾</button>'}`
@@ -459,16 +512,19 @@ $('#search-form').addEventListener('submit', async e => {
   e.preventDefault();
   const q = $('#search-input').value.trim();
   if (!q) return;
-  $('#search-status').textContent = 'Buscando...';
+  $('#search-status').textContent = 'Buscando en Deezer y Audius...';
   $('#search-results').innerHTML = '';
   try {
-    const raw = await searchTracks(q);
-    searchResults = raw.map(metaFromAudius);
+    const [dz, au] = await Promise.allSettled([searchDeezer(q), searchTracks(q)]);
+    const dzMetas = dz.status === 'fulfilled' ? dz.value.map(metaFromDeezer) : [];
+    const auMetas = au.status === 'fulfilled' ? au.value.map(metaFromAudius) : [];
+    searchResults = [...dzMetas, ...auMetas];
     if (!searchResults.length) { $('#search-status').textContent = 'Sin resultados para "' + q + '".'; return; }
-    $('#search-status').textContent = `${searchResults.length} resultados para "${q}"`;
+    $('#search-status').textContent =
+      `${searchResults.length} resultados para "${q}"  ·  ${dzMetas.length} de Deezer (30s), ${auMetas.length} de Audius (completas)`;
     renderSearch(searchResults);
   } catch {
-    $('#search-status').textContent = 'No se pudo conectar al catálogo. Revisa tu internet e intenta de nuevo.';
+    $('#search-status').textContent = 'No se pudo conectar a los catálogos. Revisa tu internet e intenta de nuevo.';
   }
 });
 
