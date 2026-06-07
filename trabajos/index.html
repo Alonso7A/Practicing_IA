@@ -31,6 +31,25 @@
       </div>
     </section>
 
+    <section class="daily-report">
+      <div class="daily-header">
+        <h2>
+          Informe Diario
+          <span id="report-indicator" class="report-indicator" title="Aún no has escrito el informe de este día">!</span>
+        </h2>
+        <div class="daily-date-nav">
+          <button id="report-prev" class="btn-action" type="button" title="Día anterior">‹</button>
+          <input type="date" id="report-date">
+          <button id="report-next" class="btn-action" type="button" title="Día siguiente">›</button>
+        </div>
+      </div>
+      <textarea id="report-text" rows="5"
+        placeholder="¿Qué tal fue tu día? ¿Qué cosas pasaron, qué salió bien y qué podrías mejorar? Escribe aquí tu informe..."></textarea>
+      <div class="daily-footer">
+        <span id="report-status" class="report-status"></span>
+      </div>
+    </section>
+
     <section class="board">
       <div class="column">
         <h2>Pendientes <span id="count-active" class="count">0</span></h2>

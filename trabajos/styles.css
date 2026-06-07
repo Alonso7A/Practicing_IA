@@ -145,6 +145,98 @@ select:focus, input:focus, textarea:focus {
   border-color: var(--primary);
 }
 
+/* Informe Diario */
+.daily-report {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.daily-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.daily-header h2 {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+
+.report-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+  animation: report-pulse 1.6s ease-in-out infinite;
+}
+
+.report-indicator.filled {
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+  animation: none;
+}
+
+@keyframes report-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18); }
+  50%      { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0.04); }
+}
+
+.daily-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.daily-date-nav input[type="date"] {
+  width: auto;
+  color-scheme: dark;
+}
+
+.daily-date-nav .btn-action {
+  font-size: 1rem;
+  line-height: 1;
+  padding: 5px 11px;
+}
+
+#report-text {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.daily-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+.report-status {
+  font-size: 0.8rem;
+  color: var(--green);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.report-status.show { opacity: 1; }
+
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr;

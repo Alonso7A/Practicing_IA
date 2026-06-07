@@ -325,6 +325,94 @@ function escapeICS(s) {
   return s.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
 }
 
+// ===== Informe Diario =====
+const REPORT_KEY = 'mis-informes-v1';
+
+function loadReports() {
+  try {
+    return JSON.parse(localStorage.getItem(REPORT_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveReports() {
+  localStorage.setItem(REPORT_KEY, JSON.stringify(reports));
+}
+
+let reports = loadReports();
+
+function dateKey(d = new Date()) {
+  return d.getFullYear() + '-'
+    + String(d.getMonth() + 1).padStart(2, '0') + '-'
+    + String(d.getDate()).padStart(2, '0');
+}
+
+const reportDate = document.getElementById('report-date');
+const reportText = document.getElementById('report-text');
+const reportIndicator = document.getElementById('report-indicator');
+const reportStatus = document.getElementById('report-status');
+
+let reportStatusTimer = null;
+
+function updateReportIndicator() {
+  const filled = reportText.value.trim().length > 0;
+  reportIndicator.classList.toggle('filled', filled);
+  reportIndicator.textContent = filled ? '✓' : '!';
+  reportIndicator.title = filled
+    ? 'Informe escrito para este día'
+    : 'Aún no has escrito el informe de este día';
+}
+
+function loadReportForDate() {
+  const key = reportDate.value || dateKey();
+  reportText.value = reports[key] || '';
+  reportStatus.classList.remove('show');
+  updateReportIndicator();
+}
+
+function flashSaved() {
+  reportStatus.textContent = 'Guardado ✓';
+  reportStatus.classList.add('show');
+  clearTimeout(reportStatusTimer);
+  reportStatusTimer = setTimeout(() => reportStatus.classList.remove('show'), 1500);
+}
+
+function shiftReportDate(delta) {
+  const d = new Date(reportDate.value + 'T00:00:00');
+  d.setDate(d.getDate() + delta);
+  const next = dateKey(d);
+  if (next > dateKey()) return; // no permitir días futuros
+  reportDate.value = next;
+  loadReportForDate();
+}
+
+// No permitir seleccionar fechas futuras y arrancar en hoy
+reportDate.max = dateKey();
+reportDate.value = dateKey();
+loadReportForDate();
+
+reportDate.addEventListener('change', () => {
+  if (reportDate.value > dateKey()) reportDate.value = dateKey();
+  loadReportForDate();
+});
+
+reportText.addEventListener('input', () => {
+  const key = reportDate.value || dateKey();
+  const val = reportText.value;
+  if (val.trim()) {
+    reports[key] = val;
+  } else {
+    delete reports[key];
+  }
+  saveReports();
+  updateReportIndicator();
+  flashSaved();
+});
+
+document.getElementById('report-prev').addEventListener('click', () => shiftReportDate(-1));
+document.getElementById('report-next').addEventListener('click', () => shiftReportDate(1));
+
 // ===== Auto-refresh para que cambien los colores con el tiempo =====
 setInterval(render, 60000); // cada minuto
 
