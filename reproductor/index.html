@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Reproductor</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>🎵 Mi Reproductor</h1>
+      <p class="subtitle">Busca, descarga y arma tus playlists</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="search">🔎 Buscar</button>
+    <button class="tab" data-view="library">📚 Mi biblioteca</button>
+    <button class="tab" data-view="playlists">🎶 Playlists</button>
+  </nav>
+
+  <main class="container">
+    <!-- ===== BUSCAR ===== -->
+    <section id="view-search" class="view active">
+      <form id="search-form" class="search-bar">
+        <input id="search-input" type="search"
+          placeholder="Busca canciones o artistas (catálogo libre de Audius)...">
+        <button class="btn btn-primary" type="submit">Buscar</button>
+      </form>
+      <p class="hint">
+        Resultados del catálogo abierto de <strong>Audius</strong>. Puedes reproducir ▶️,
+        agregar a tu biblioteca ➕, descargar a tu PC ⬇️ o guardar dentro de la página 💾.
+      </p>
+      <div id="search-status" class="status"></div>
+      <div id="search-results" class="track-grid"></div>
+    </section>
+
+    <!-- ===== BIBLIOTECA ===== -->
+    <section id="view-library" class="view">
+      <div class="lib-actions">
+        <label class="btn btn-primary file-label">
+          ⬆️ Subir mis archivos
+          <input id="file-input" type="file" accept="audio/*" multiple hidden>
+        </label>
+        <button id="play-all-lib" class="btn btn-ghost">▶️ Reproducir todo</button>
+        <button id="shuffle-all-lib" class="btn btn-ghost">🔀 Aleatorio</button>
+        <span class="lib-count">Canciones: <b id="lib-count">0</b></span>
+      </div>
+      <div id="library-list" class="track-list"></div>
+      <p id="library-empty" class="empty">
+        Tu biblioteca está vacía. Busca canciones y agrégalas, o sube tus propios archivos.
+      </p>
+    </section>
+
+    <!-- ===== PLAYLISTS ===== -->
+    <section id="view-playlists" class="view">
+      <form id="playlist-form" class="search-bar">
+        <input id="playlist-name" type="text" maxlength="60"
+          placeholder="Nombre de la nueva playlist...">
+        <button class="btn btn-primary" type="submit">+ Crear</button>
+      </form>
+      <div id="playlists-list" class="playlists"></div>
+      <p id="playlists-empty" class="empty">Aún no tienes playlists. Crea una arriba ⬆️</p>
+    </section>
+  </main>
+
+  <!-- ===== Modal: agregar a playlist ===== -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Agregar a playlist</h2>
+      <p id="modal-track" class="modal-track"></p>
+      <div id="modal-playlists" class="modal-playlists"></div>
+      <form id="modal-newpl" class="search-bar">
+        <input id="modal-newpl-name" type="text" maxlength="60" placeholder="O crea una nueva...">
+        <button class="btn btn-primary" type="submit">+</button>
+      </form>
+      <div class="modal-actions">
+        <button id="modal-close" type="button" class="btn btn-ghost">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Barra del reproductor ===== -->
+  <footer id="player" class="player hidden">
+    <div class="np">
+      <div id="np-art" class="np-art"></div>
+      <div class="np-info">
+        <div id="np-title" class="np-title">—</div>
+        <div id="np-artist" class="np-artist"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="ctrl-buttons">
+        <button id="btn-shuffle" class="ctrl" title="Aleatorio">🔀</button>
+        <button id="btn-prev" class="ctrl" title="Anterior">⏮</button>
+        <button id="btn-play" class="ctrl ctrl-main" title="Reproducir / Pausa">▶️</button>
+        <button id="btn-next" class="ctrl" title="Siguiente">⏭</button>
+        <button id="btn-repeat" class="ctrl" title="Repetir">🔁</button>
+      </div>
+      <div class="seek">
+        <span id="cur-time" class="t">0:00</span>
+        <input id="seek" type="range" min="0" max="1000" value="0">
+        <span id="dur-time" class="t">0:00</span>
+      </div>
+    </div>
+
+    <div class="vol">
+      <span>🔊</span>
+      <input id="volume" type="range" min="0" max="100" value="100">
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
