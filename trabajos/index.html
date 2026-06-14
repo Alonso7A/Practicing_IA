@@ -48,6 +48,53 @@
       <div class="daily-footer">
         <span id="report-status" class="report-status"></span>
       </div>
+
+      <div id="report-analysis" class="report-analysis hidden">
+        <div class="ra-divider"></div>
+        <div id="ra-empty" class="ra-empty hidden">
+          ✍️ Escribe un poco más sobre cómo te sentiste hoy para poder analizar tu día.
+        </div>
+        <div id="ra-main">
+          <div class="ra-top">
+            <div class="ra-score">
+              <div id="ra-gauge" class="ra-gauge"><span id="ra-emoji" class="ra-emoji">🙂</span></div>
+              <div class="ra-score-num"><span id="ra-score">0</span><small>/100</small></div>
+              <div id="ra-label" class="ra-label">—</div>
+            </div>
+            <div class="ra-dims">
+              <div class="ra-dim">
+                <div class="ra-dim-head"><span>😊 Ánimo</span><span id="ra-mood-val" class="ra-dim-num">—</span></div>
+                <div class="ra-dim-bar"><div id="ra-mood-fill" class="ra-dim-fill"></div></div>
+              </div>
+              <div class="ra-dim">
+                <div class="ra-dim-head"><span>⚡ Energía</span><span id="ra-energy-val" class="ra-dim-num">—</span></div>
+                <div class="ra-dim-bar"><div id="ra-energy-fill" class="ra-dim-fill"></div></div>
+              </div>
+              <div class="ra-dim">
+                <div class="ra-dim-head"><span>🧠 Estrés</span><span id="ra-stress-val" class="ra-dim-num">—</span></div>
+                <div class="ra-dim-bar"><div id="ra-stress-fill" class="ra-dim-fill"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="ra-trend" class="ra-trend"></div>
+
+          <div class="ra-tips">
+            <h3>💡 Cómo mejorar</h3>
+            <ul id="ra-tips-list"></ul>
+          </div>
+
+          <div class="ra-history">
+            <div class="ra-history-head">📈 Tus últimos días</div>
+            <div id="ra-history-bars" class="ra-history-bars"></div>
+          </div>
+        </div>
+        <p class="ra-disclaimer">
+          🔒 Análisis 100% local y privado: tus datos nunca salen de tu navegador.
+          Esto es una herramienta de autoconocimiento, no un diagnóstico médico.
+          Si te sientes mal de forma persistente, busca apoyo de alguien de confianza o un profesional.
+        </p>
+      </div>
     </section>
 
     <section class="board">
