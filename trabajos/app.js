@@ -438,33 +438,50 @@ const LEX = {
     agradecido:2, agradecida:2, gracias:1, agradezco:2, amor:2, amado:2, querido:1, cariño:1,
     esperanza:1, optimista:2, positivo:1, positiva:1, disfrute:2, disfruté:2, disfruto:1, diversion:1, diversión:1, divertido:1,
     exito:2, éxito:2, progreso:1, mejor:1, mejore:1, mejoré:1, sonreir:1, sonreír:1, rei:1, reí:1, paz:1, sano:1, salud:1, descansado:1,
+    realizado:1, esperanzado:2, ilusionada:2, gane:2, gané:2, aprobe:2, aprobé:2, aprobado:2, ascenso:2, felicitaron:2, felicitacion:2, felicitación:2,
+    reconocimiento:2, premio:2, celebrar:1, celebre:2, celebré:2, vacaciones:2, libre:1, libertad:1, aliviado:2, alivio:2, confiado:1, confianza:1,
+    capaz:1, animado:2, animada:2, entusiasmado:2, entusiasmada:2, entusiasmo:2, encantado:2, encantada:2, bendecido:2, afortunado:2, afortunada:2, suerte:1,
+    valorado:2, valorada:2, apreciado:2, escuchado:1, resolvi:1, resolví:1, solucione:1, solucioné:1, aprendi:1, aprendí:1, creci:1, crecí:1, crecimiento:1,
+    risas:1, sonrisa:1, abrazo:1, conexion:1, conexión:1, vital:1, pleno:1, plena:1, ligero:1, acompañado:1, acompañada:1,
   },
   neg: { // ánimo negativo
     triste:2, tristeza:2, mal:1, malo:1, mala:1, fatal:2, terrible:2, horrible:2, peor:2, pesimo:2, pésimo:2,
     deprimido:3, deprimida:3, depresion:3, depresión:3, depre:2, vacio:2, vacío:2, vacia:2, vacía:2,
-    solo:1, sola:1, soledad:2, abandonado:2, aislado:2,
+    soledad:2, solitario:2, solitaria:2, abandonado:2, abandonada:2, aislado:2, aislada:2,
     frustrado:2, frustrada:2, frustracion:2, frustración:2, decepcionado:2, decepcion:2, decepción:2,
     enojado:2, enojada:2, enojo:2, molesto:1, molesta:1, enfadado:2, rabia:2, ira:2, furioso:2,
     llorar:2, llore:2, lloré:2, llanto:2, lagrimas:2, lágrimas:2, dolor:2, duele:2, herido:2, sufrir:2, sufro:2, sufrimiento:2,
     culpa:2, culpable:2, arrepentido:1, verguenza:2, vergüenza:2, fracaso:2, fracase:2, fracasé:2, falle:2, fallé:2, perdi:1, perdí:1,
     odio:2, desesperado:3, desesperacion:3, desesperación:3, inutil:3, inútil:3, rendirme:3, rindo:2,
     desanimado:2, desanimo:2, desánimo:2, miedo:2, asustado:2, temor:2, panico:3, pánico:3,
+    reprobe:3, reprobé:3, jale:2, jalé:2, suspendi:2, suspendí:2, discuti:2, discutí:2, discusion:2, discusión:2, pelea:2, pelee:2, peleé:2,
+    grito:2, gritó:2, gritaron:2, gritando:2, regañaron:2, regaño:2, regañó:2, criticaron:2, critica:1, rechazo:2, rechazado:2, rechazada:2, rechazaron:2,
+    ignorado:2, ignorada:2, ignoraron:2, traicion:3, traición:3, traicionado:3, mentira:2, engaño:2, engañado:2, ruptura:2, extraño:1, nostalgia:1,
+    melancolia:2, melancolía:2, melancolico:2, desmotivado:2, desmotivada:2, desganado:2, harto:2, harta:2, hartazgo:2, derrota:2, derrotado:2, vencido:2,
+    hundido:3, hundida:3, desastre:2, caos:2, problema:1, problemas:1, conflicto:2, impotencia:3, impotente:3, indefenso:3, atrapado:2, atrapada:2,
+    estancado:2, estancada:2, bloqueado:2, confundido:1, confundida:1, confusion:1, confusión:1, inseguro:2, insegura:2, inseguridad:2, inadecuado:2,
+    dolido:2, dolida:2, lastimado:2, lastimada:2, devastado:3, devastada:3, desolado:3, enfermo:1, enferma:1,
   },
   stress: { // estrés / ansiedad
     ansioso:2, ansiosa:2, ansiedad:2, estresado:2, estresada:2, estres:2, estrés:2, estresante:2,
     nervioso:2, nerviosa:2, nervios:2, preocupado:2, preocupada:2, preocupacion:2, preocupación:2, preocupa:1,
     agobiado:2, agobiada:2, agobio:2, abrumado:2, abrumada:2, saturado:2, colapsado:2, colapso:2,
     presion:2, presión:2, tension:2, tensión:2, tenso:2, tensa:2, angustia:2, angustiado:2, inquieto:1, agitado:2, sobrecargado:2,
+    examen:1, examenes:1, exámenes:1, parcial:1, entrega:1, deadline:1, plazo:1, urgente:1, apurado:2, apurada:2, prisa:1, carga:1, cargado:1,
+    atareado:2, desbordado:2, sobrepasado:2, crisis:2, histerico:2, histérico:2, alterado:2, alterada:2, insomnio:2, palpitaciones:2,
   },
   lowEnergy: { // fatiga / poca energía
     cansado:2, cansada:2, cansancio:2, agotado:2, agotada:2, agotamiento:3, exhausto:3, exhausta:3,
     fatigado:2, fatiga:2, somnoliento:1, flojo:1, flojera:1, pereza:1, perezoso:1,
     desgastado:2, apatico:2, apático:2, apatia:2, apatía:2,
+    desvelado:2, desvele:2, desvelé:2, trasnoche:2, trasnoché:2, ojeras:1, decaido:2, decaído:2, decaida:2, debil:1, débil:1, mareado:1,
+    agotador:2, agotadora:2,
   },
   highEnergy: { // energía / productividad
     energia:2, energía:2, energico:2, enérgico:2, activo:1, activa:1, productivo:2, productiva:2, productividad:2,
     descanse:1, descansé:1, fresco:1, ejercicio:1, entrene:1, entrené:1, deporte:1, camine:1, caminé:1, corri:1, corrí:1,
     gym:1, enfocado:1, concentrado:1, concentracion:1, concentración:1,
+    vitalidad:1, dinamico:1, dinámico:1, agil:1, ágil:1, despejado:1, claridad:1, gimnasio:1, rutina:1, yoga:1, meditacion:1, meditación:1, meditar:1, caminata:1,
   },
 };
 
@@ -482,6 +499,25 @@ const PHRASES = [
   ['me siento mal', { cat: 'neg', w: 2 }],
   ['todo bien', { cat: 'pos', w: 2 }],
   ['todo mal', { cat: 'neg', w: 2 }],
+  ['me siento solo', { cat: 'neg', w: 2 }],
+  ['me siento sola', { cat: 'neg', w: 2 }],
+  ['me fue bien', { cat: 'pos', w: 2 }],
+  ['me fue mal', { cat: 'neg', w: 2 }],
+  ['salio bien', { cat: 'pos', w: 2 }],
+  ['salio mal', { cat: 'neg', w: 2 }],
+  ['buen dia', { cat: 'pos', w: 2 }],
+  ['gran dia', { cat: 'pos', w: 2 }],
+  ['mal dia', { cat: 'neg', w: 2 }],
+  ['no tengo ganas', { cat: 'lowEnergy', w: 2 }],
+  ['no puedo dormir', { cat: 'lowEnergy', w: 2 }],
+  ['dormi poco', { cat: 'lowEnergy', w: 2 }],
+  ['dormi mal', { cat: 'lowEnergy', w: 2 }],
+  ['no descanse', { cat: 'lowEnergy', w: 2 }],
+  ['dolor de cabeza', { cat: 'lowEnergy', w: 1 }],
+  ['mucho que hacer', { cat: 'stress', w: 2 }],
+  ['no me alcanza el tiempo', { cat: 'stress', w: 2 }],
+  ['fecha limite', { cat: 'stress', w: 1 }],
+  ['hice ejercicio', { cat: 'highEnergy', w: 1 }],
 ].sort((a, b) => b[0].length - a[0].length); // las más largas primero
 
 const NEGATORS = new Set(['no', 'nunca', 'jamas', 'tampoco', 'ni', 'sin', 'nada']);
@@ -496,7 +532,9 @@ for (const cat of Object.keys(LEX)) {
 function analyzeReport(text) {
   const raw = (text || '').trim();
   const words = raw ? raw.split(/\s+/).length : 0;
-  let nText = ' ' + norm(raw) + ' ';
+  // Convierte puntuación/números en espacios para que las frases se detecten
+  // aunque estén pegadas a comas o puntos ("dormí mal." -> " dormi mal ").
+  let nText = ' ' + norm(raw).replace(/[^a-zñ]+/g, ' ').trim() + ' ';
   const acc = { pos: 0, neg: 0, stress: 0, lowEnergy: 0, highEnergy: 0 };
 
   // 1) Frases
@@ -678,14 +716,25 @@ function updateAnalysis() {
   }
 }
 
-// Disparadores (se suman a los listeners existentes, sin reemplazarlos)
-let analyzeTimer = null;
-reportText.addEventListener('input', () => {
-  clearTimeout(analyzeTimer);
-  analyzeTimer = setTimeout(updateAnalysis, 450);
-});
-reportDate.addEventListener('change', updateAnalysis);
-document.getElementById('report-prev').addEventListener('click', updateAnalysis);
-document.getElementById('report-next').addEventListener('click', updateAnalysis);
+// El análisis solo aparece a demanda: con el botón "Analizar" o con Ctrl/Cmd + Enter.
+// (Enter normal sigue sirviendo para escribir párrafos en tu informe.)
+function hideAnalysis() { analysisBox.classList.add('hidden'); }
 
-updateAnalysis(); // estado inicial
+document.getElementById('btn-analyze').addEventListener('click', updateAnalysis);
+
+reportText.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    updateAnalysis();
+  }
+});
+
+// Si vuelves a editar o cambias de día, se oculta el resultado anterior
+// (ya quedó desactualizado) y reaparece cuando lo vuelves a pedir.
+reportText.addEventListener('input', hideAnalysis);
+reportDate.addEventListener('change', hideAnalysis);
+document.getElementById('report-prev').addEventListener('click', hideAnalysis);
+document.getElementById('report-next').addEventListener('click', hideAnalysis);
+
+// Arranca oculto: no se muestra hasta que lo pidas.
+hideAnalysis();

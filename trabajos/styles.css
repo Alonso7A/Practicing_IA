@@ -222,11 +222,22 @@ select:focus, input:focus, textarea:focus {
 
 .daily-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
   min-height: 18px;
 }
+
+.daily-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.report-hint { font-size: 0.72rem; color: var(--text-dim); }
 
 .report-status {
   font-size: 0.8rem;
