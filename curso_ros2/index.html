@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso completo de ROS 2 — de cero a tu primer robot</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- =============== SIDEBAR =============== -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Curso de ROS 2</div>
+    <div class="sidebar-subtitle">Robot Operating System</div>
+    <nav>
+      <ol>
+        <li><a href="#intro">¿Qué es ROS 2?</a></li>
+        <li><a href="#ros1-ros2">ROS 1 vs ROS 2</a></li>
+        <li><a href="#distros">Distribuciones y versiones</a></li>
+        <li><a href="#conceptos">Conceptos clave</a></li>
+        <li><a href="#arquitectura">Arquitectura y DDS</a></li>
+        <li><a href="#instalacion">Instalación paso a paso</a></li>
+        <li><a href="#entorno">Configurar el entorno</a></li>
+        <li><a href="#prueba">Primera prueba (turtlesim)</a></li>
+        <li><a href="#workspace">Workspace y colcon</a></li>
+        <li><a href="#paquetes">Crear un paquete</a></li>
+        <li><a href="#nodos">Nodos</a></li>
+        <li><a href="#topics">Topics (pub/sub)</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#acciones">Acciones</a></li>
+        <li><a href="#parametros">Parámetros</a></li>
+        <li><a href="#interfaces">Interfaces personalizadas</a></li>
+        <li><a href="#launch">Archivos launch</a></li>
+        <li><a href="#herramientas">Herramientas</a></li>
+        <li><a href="#comandos">Comandos esenciales (CLI)</a></li>
+        <li><a href="#practicas">Buenas prácticas y errores</a></li>
+      </ol>
+    </nav>
+    <div class="sidebar-footer">
+      Material de estudio · ROS 2 Jazzy / Humble<br>
+      Paleta IEEE sobria · 2026
+    </div>
+  </aside>
+
+  <!-- =============== CONTENIDO =============== -->
+  <main class="content">
+
+    <header class="hero">
+      <h1>Curso completo de ROS 2</h1>
+      <p class="lede">De cero a tu primer nodo. Una guía concisa y bien estructurada que cubre teoría, instalación, configuración del entorno, creación de paquetes, nodos, topics, servicios, acciones, parámetros, launch files, herramientas y un recetario de comandos listos para copiar.</p>
+      <div class="hero-meta">
+        <span>20 secciones paso a paso</span>
+        <span>Diagramas interactivos</span>
+        <span>Comandos listos para copiar</span>
+        <span>Python (rclpy) y C++ (rclcpp)</span>
+      </div>
+    </header>
+
+    <!-- ============ 1. INTRO ============ -->
+    <section id="intro">
+      <h2><span class="sec-num">01</span>¿Qué es ROS 2?</h2>
+      <p><strong>ROS 2</strong> (<em>Robot Operating System 2</em>) no es un sistema operativo en el sentido clásico, sino un <strong>middleware</strong> y un conjunto de bibliotecas y herramientas de código abierto para construir aplicaciones robóticas. Resuelve los problemas que todo robot comparte —comunicación entre procesos, paso de mensajes, control de drivers, gestión de paquetes y herramientas de depuración— para que no tengas que reinventarlos en cada proyecto.</p>
+
+      <aside class="callout callout-definicion">
+        <h4 class="callout-title">Definición</h4>
+        <p>ROS 2 es un <em>framework</em> que conecta muchos programas pequeños e independientes (llamados <strong>nodos</strong>) que se comunican entre sí enviándose datos a través de una red. Cada nodo hace una tarea (leer un sensor, mover un motor, planificar una ruta) y juntos forman el comportamiento del robot.</p>
+      </aside>
+
+      <p>La idea central es la <strong>modularidad</strong>: en lugar de un único programa gigante, tu robot es un grafo de nodos que se pueden desarrollar, probar, reiniciar y reemplazar de forma aislada. Esto facilita el trabajo en equipo, la reutilización de código y la depuración.</p>
+
+      <h3>¿Para qué sirve?</h3>
+      <ul>
+        <li><strong>Abstracción de hardware:</strong> hablar con sensores y actuadores mediante interfaces estándar.</li>
+        <li><strong>Comunicación:</strong> paso de mensajes entre procesos, incluso entre máquinas distintas en red.</li>
+        <li><strong>Ecosistema:</strong> miles de paquetes listos —navegación (Nav2), percepción, manipulación (MoveIt 2), simulación (Gazebo)—.</li>
+        <li><strong>Herramientas:</strong> visualización (RViz2), grabación de datos (rosbag), inspección del grafo (rqt).</li>
+      </ul>
+
+      <aside class="callout callout-resumen">
+        <h4 class="callout-title">Analogía</h4>
+        <p>Piensa en ROS 2 como el <strong>sistema nervioso</strong> del robot: los nodos son los órganos (ojos, músculos, cerebro) y los <em>topics</em> son los nervios que transportan la información entre ellos. ROS 2 garantiza que el mensaje llegue del sensor al cerebro y del cerebro al motor.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 2. ROS1 vs ROS2 ============ -->
+    <section id="ros1-ros2">
+      <h2><span class="sec-num">02</span>ROS 1 vs ROS 2: por qué cambió todo</h2>
+      <p>ROS 1 nació en 2007 para investigación. ROS 2 es una reescritura pensada para <strong>producción, robots reales, multi-robot y sistemas críticos</strong>. El cambio más importante: ROS 1 dependía de un proceso central, el <code>roscore</code> (el <em>ROS Master</em>); ROS 2 lo elimina y usa <strong>DDS</strong> con descubrimiento descentralizado.</p>
+
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 1 — Diferencias esenciales</caption>
+        <thead>
+          <tr><th>Aspecto</th><th>ROS 1</th><th>ROS 2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Comunicación</td><td>TCPROS/UDPROS propio</td><td>DDS (estándar industrial)</td></tr>
+          <tr><td>Nodo central</td><td>Requiere <code>roscore</code></td><td>Sin master: descubrimiento P2P</td></tr>
+          <tr><td>Tiempo real</td><td>Limitado</td><td>Diseñado para soportarlo</td></tr>
+          <tr><td>Calidad de servicio (QoS)</td><td>No</td><td>Sí, configurable por conexión</td></tr>
+          <tr><td>Multiplataforma</td><td>Linux principalmente</td><td>Linux, Windows y macOS</td></tr>
+          <tr><td>Lenguajes</td><td>roscpp / rospy</td><td>rclcpp / rclpy (sobre <code>rcl</code>)</td></tr>
+          <tr><td>Build system</td><td>catkin</td><td>colcon + ament</td></tr>
+          <tr><td>Seguridad</td><td>No nativa</td><td>SROS2 (cifrado y autenticación)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Importante</h4>
+        <p>ROS 1 (Noetic) llegó a su <strong>fin de vida en mayo de 2025</strong>. Para cualquier proyecto nuevo debes usar <strong>ROS 2</strong>. Este curso se centra exclusivamente en ROS 2.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 3. DISTROS ============ -->
+    <section id="distros">
+      <h2><span class="sec-num">03</span>Distribuciones y versiones</h2>
+      <p>Igual que Ubuntu, ROS 2 publica <strong>distribuciones</strong> con nombres en orden alfabético. Cada una se empareja con una versión concreta de Ubuntu. Las versiones <span class="badge lts">LTS</span> (soporte largo) son las recomendadas para aprender y para producción.</p>
+
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 2 — Distribuciones recientes de ROS 2</caption>
+        <thead>
+          <tr><th>Distribución</th><th>Lanzamiento</th><th>Ubuntu</th><th>Tipo / Soporte</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Jazzy Jalisco</strong></td><td>Mayo 2024</td><td>24.04</td><td><span class="badge lts">LTS</span> hasta 2029</td></tr>
+          <tr><td><strong>Humble Hawksbill</strong></td><td>Mayo 2022</td><td>22.04</td><td><span class="badge lts">LTS</span> hasta 2027</td></tr>
+          <tr><td>Kilted Kaiju</td><td>Mayo 2025</td><td>24.04</td><td><span class="badge warn">Normal</span> (12 meses)</td></tr>
+          <tr><td>Iron Irwini</td><td>Mayo 2023</td><td>22.04</td><td><span class="badge eol">EOL</span> (finalizado)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">¿Cuál elijo?</h4>
+        <p><strong>Jazzy Jalisco</strong> sobre <strong>Ubuntu 24.04</strong> si empiezas hoy: es la LTS más moderna. Si necesitas máxima compatibilidad con tutoriales y paquetes existentes, <strong>Humble</strong> sobre <strong>Ubuntu 22.04</strong> sigue siendo la opción más extendida. Los comandos de este curso funcionan igual en ambas: solo cambia el nombre de la distro (<code>jazzy</code> ↔ <code>humble</code>).</p>
+      </aside>
+    </section>
+
+    <!-- ============ 4. CONCEPTOS ============ -->
+    <section id="conceptos">
+      <h2><span class="sec-num">04</span>Conceptos clave</h2>
+      <p>Estos seis conceptos son el vocabulario que usarás todo el tiempo. Entiéndelos bien y el resto del curso fluye.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <span class="ico">🔵</span>
+          <h4>Nodo (Node)</h4>
+          <p>Programa que cumple una función concreta. Un robot ejecuta muchos nodos a la vez (cámara, ruedas, planificador).</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">📡</span>
+          <h4>Topic</h4>
+          <p>Canal con nombre por el que fluyen datos en <em>streaming</em>. Modelo <strong>publicador/suscriptor</strong>, muchos a muchos.</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">📨</span>
+          <h4>Mensaje (Message)</h4>
+          <p>La estructura de datos que viaja por un topic (p. ej. <code>geometry_msgs/Twist</code> para velocidad).</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🤝</span>
+          <h4>Servicio (Service)</h4>
+          <p>Llamada <strong>petición/respuesta</strong>, síncrona. Un cliente pregunta, un servidor responde una vez.</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🎯</span>
+          <h4>Acción (Action)</h4>
+          <p>Tarea de larga duración con <strong>feedback</strong> y posibilidad de cancelar (p. ej. "ve a este punto").</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">⚙️</span>
+          <h4>Parámetro (Parameter)</h4>
+          <p>Valor de configuración de un nodo, ajustable en tiempo de ejecución (velocidad máxima, ganancias).</p>
+        </div>
+      </div>
+
+      <h3>¿Cuándo usar cada mecanismo de comunicación?</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 3 — Topics vs Servicios vs Acciones</caption>
+        <thead>
+          <tr><th>Mecanismo</th><th>Patrón</th><th>Úsalo para…</th><th>Ejemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Topic</strong></td><td>Pub/Sub continuo</td><td>Flujos de datos periódicos</td><td>Lecturas de un LIDAR a 30 Hz</td></tr>
+          <tr><td><strong>Servicio</strong></td><td>Petición/Respuesta</td><td>Operaciones rápidas puntuales</td><td>"Enciende la luz", "suma 2+3"</td></tr>
+          <tr><td><strong>Acción</strong></td><td>Objetivo + feedback</td><td>Tareas largas y cancelables</td><td>"Navega al punto (4, 2)"</td></tr>
+          <tr><td><strong>Parámetro</strong></td><td>Configuración</td><td>Ajustes de un nodo</td><td>Velocidad máxima permitida</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 5. ARQUITECTURA ============ -->
+    <section id="arquitectura">
+      <h2><span class="sec-num">05</span>Arquitectura y DDS</h2>
+      <p>El robot, visto desde fuera, es un <strong>grafo de cómputo</strong>: nodos (vértices) conectados por topics, servicios y acciones (aristas). No hay un centro: cualquier nodo descubre a los demás automáticamente gracias a DDS.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart LR
+    CAM["/camera_node<br/>📷 Cámara"]
+    LIDAR["/lidar_node<br/>📡 LIDAR"]
+    BRAIN["/navigation<br/>🧠 Planificador"]
+    MOTOR["/base_controller<br/>⚙️ Motores"]
+
+    CAM -- "/image_raw" --> BRAIN
+    LIDAR -- "/scan" --> BRAIN
+    BRAIN -- "/cmd_vel" --> MOTOR
+    MOTOR -- "/odom" --> BRAIN
+        </pre>
+        <p class="diagram-caption"><strong>Figura 1.</strong> Grafo de cómputo típico: los sensores publican, el cerebro procesa y ordena, el controlador mueve y devuelve odometría.</p>
+      </div>
+
+      <h3>La pila de capas de ROS 2</h3>
+      <p>Tu código nunca habla directamente con DDS. Lo hace a través de capas que te aíslan de los detalles:</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart TB
+    A["Tu nodo<br/>(Python o C++)"]
+    B["rclpy / rclcpp<br/>API por lenguaje"]
+    C["rcl<br/>Biblioteca cliente común (C)"]
+    D["rmw<br/>ROS Middleware Interface"]
+    E["DDS<br/>Fast DDS · Cyclone DDS · …"]
+    A --> B --> C --> D --> E
+        </pre>
+        <p class="diagram-caption"><strong>Figura 2.</strong> Capas de ROS 2. Cambiar de implementación DDS solo afecta a la capa <code>rmw</code>; tu código no cambia.</p>
+      </div>
+
+      <aside class="callout callout-definicion">
+        <h4 class="callout-title">DDS y QoS</h4>
+        <p><strong>DDS</strong> (<em>Data Distribution Service</em>) es el estándar industrial de comunicación que ROS 2 usa por debajo. Aporta el <strong>descubrimiento automático</strong> (los nodos se encuentran solos) y la <strong>QoS</strong> (<em>Quality of Service</em>): puedes pedir entrega fiable o "best effort", definir cuántos mensajes guardar en cola, etc. Esto permite ajustar la comunicación a una red WiFi inestable o a un sensor crítico.</p>
+      </aside>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Cuidado con la QoS incompatible</h4>
+        <p>Si un publicador usa QoS <em>"best effort"</em> y un suscriptor exige <em>"reliable"</em>, <strong>no se conectarán</strong> aunque el topic sea el mismo. Es una de las causas más frecuentes de "publico pero nadie recibe".</p>
+      </aside>
+    </section>
+
+    <!-- ============ 6. INSTALACIÓN ============ -->
+    <section id="instalacion">
+      <h2><span class="sec-num">06</span>Instalación paso a paso</h2>
+      <p>Instalaremos <strong>ROS 2 Jazzy</strong> sobre <strong>Ubuntu 24.04</strong> con paquetes Debian (el método oficial y más estable). Si usas Humble + Ubuntu 22.04, sustituye <code>jazzy</code> por <code>humble</code> en todos los comandos.</p>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">¿No tienes Ubuntu?</h4>
+        <p>Opciones: una <strong>máquina virtual</strong> (VirtualBox/VMware), <strong>WSL 2</strong> en Windows, <strong>dual boot</strong>, o <strong>Docker</strong> con la imagen oficial <code>ros:jazzy</code>. Para empezar, una VM o WSL 2 es lo más sencillo.</p>
+      </aside>
+
+      <ol class="steps">
+        <li>
+          <h4>Configurar el locale (UTF-8)</h4>
+          <p>ROS 2 requiere un locale con soporte UTF-8.</p>
+          <pre class="code-block shell" data-lang="bash"><code>locale  <span class="cmt"># comprueba si ya tienes UTF-8</span>
+sudo apt update &amp;&amp; sudo apt install -y locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8</code></pre>
+        </li>
+        <li>
+          <h4>Habilitar el repositorio Universe</h4>
+          <pre class="code-block shell" data-lang="bash"><code>sudo apt install -y software-properties-common
+sudo add-apt-repository universe</code></pre>
+        </li>
+        <li>
+          <h4>Añadir la clave GPG y el repositorio de ROS 2</h4>
+          <p>El paquete <code>ros2-apt-source</code> configura la clave y la lista de fuentes, y las mantiene actualizadas automáticamente.</p>
+          <pre class="code-block shell" data-lang="bash"><code>sudo apt update &amp;&amp; sudo apt install -y curl
+export ROS_APT_SOURCE_VERSION=$(curl -s \
+  https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest \
+  | grep -F "tag_name" | awk -F\" '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb \
+  "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release &amp;&amp; echo $VERSION_CODENAME)_all.deb"
+sudo apt install -y /tmp/ros2-apt-source.deb</code></pre>
+        </li>
+        <li>
+          <h4>Actualizar e instalar ROS 2</h4>
+          <p><code>desktop</code> incluye RViz2, demos y tutoriales (recomendado). <code>ros-base</code> es la versión mínima sin GUI, ideal para robots embebidos.</p>
+          <pre class="code-block shell" data-lang="bash"><code>sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install -y ros-jazzy-desktop      <span class="cmt"># completo (recomendado)</span>
+<span class="cmt"># sudo apt install -y ros-jazzy-ros-base  # mínimo, sin GUI</span></code></pre>
+        </li>
+        <li>
+          <h4>Instalar herramientas de desarrollo</h4>
+          <p>Necesarias para compilar tus propios paquetes (<code>colcon</code>, <code>rosdep</code>, etc.).</p>
+          <pre class="code-block shell" data-lang="bash"><code>sudo apt install -y ros-dev-tools</code></pre>
+        </li>
+        <li>
+          <h4>Verificar la instalación</h4>
+          <p>Carga el entorno y lanza un par de nodos de demostración (ver siguiente sección).</p>
+          <pre class="code-block shell" data-lang="bash"><code>source /opt/ros/jazzy/setup.bash
+ros2 doctor          <span class="cmt"># diagnóstico general del sistema</span>
+ros2 --help</code></pre>
+        </li>
+      </ol>
+
+      <aside class="callout callout-error">
+        <h4 class="callout-title">Error típico: "ros2: command not found"</h4>
+        <p>Significa que <strong>no has cargado el entorno</strong>. Ejecuta <code>source /opt/ros/jazzy/setup.bash</code> en esa terminal. Para no repetirlo en cada terminal nueva, automatízalo en la siguiente sección.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 7. ENTORNO ============ -->
+    <section id="entorno">
+      <h2><span class="sec-num">07</span>Configurar el entorno (sourcing)</h2>
+      <p>ROS 2 vive en <code>/opt/ros/&lt;distro&gt;</code>. Para que tu terminal "sepa" dónde están los comandos y paquetes, debes <strong>cargar (source)</strong> su script de setup. Hacerlo a mano cada vez es tedioso, así que lo añadimos a <code>~/.bashrc</code> para que se cargue solo.</p>
+
+      <pre class="code-block shell" data-lang="bash"><code><span class="cmt"># Cargar ROS 2 automáticamente en cada terminal nueva</span>
+echo "source /opt/ros/jazzy/setup.bash" &gt;&gt; ~/.bashrc
+source ~/.bashrc
+
+<span class="cmt"># Comprobar que las variables de ROS están definidas</span>
+printenv | grep -i ROS</code></pre>
+
+      <h3>Variables de entorno útiles</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 4 — Variables de entorno frecuentes</caption>
+        <thead>
+          <tr><th>Variable</th><th>Para qué sirve</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ROS_DOMAIN_ID</code></td><td>Aísla redes ROS. Solo los nodos con el mismo ID se ven entre sí. Útil para varios robots o varios alumnos en la misma red. Valor recomendado: 0–101.</td></tr>
+          <tr><td><code>ROS_AUTOMATIC_DISCOVERY_RANGE</code></td><td>Limita el descubrimiento. Pon <code>LOCALHOST</code> para que tus nodos solo se vean dentro de tu propio PC (evita "ruido" en redes compartidas).</td></tr>
+          <tr><td><code>RMW_IMPLEMENTATION</code></td><td>Elige la implementación DDS (p. ej. <code>rmw_cyclonedds_cpp</code> o <code>rmw_fastrtps_cpp</code>).</td></tr>
+          <tr><td><code>ROS_LOCALHOST_ONLY</code></td><td>Equivalente antiguo (Humble) de limitar a localhost: <code>1</code> = sí. En Jazzy usa <code>ROS_AUTOMATIC_DISCOVERY_RANGE</code>.</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <pre class="code-block shell" data-lang="bash"><code><span class="cmt"># Ejemplo: aislar tu sesión en una red compartida (aula, laboratorio)</span>
+echo "export ROS_DOMAIN_ID=42" &gt;&gt; ~/.bashrc
+echo "export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST" &gt;&gt; ~/.bashrc
+source ~/.bashrc</code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Regla de oro del "sourcing"</h4>
+        <p>Habrá <strong>dos</strong> setups que cargar: el de ROS 2 (<code>/opt/ros/jazzy/setup.bash</code>, el <em>underlay</em>) y el de tu propio espacio de trabajo (<code>~/ros2_ws/install/setup.bash</code>, el <em>overlay</em>). Siempre se carga primero el underlay y luego el overlay.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 8. PRIMERA PRUEBA ============ -->
+    <section id="prueba">
+      <h2><span class="sec-num">08</span>Primera prueba: turtlesim</h2>
+      <p><strong>turtlesim</strong> es el "Hola Mundo" de ROS: un simulador de una tortuga que se mueve por la pantalla. Es perfecto para ver nodos, topics y servicios en acción sin tocar código.</p>
+
+      <pre class="code-block shell" data-lang="bash"><code>sudo apt install -y ros-jazzy-turtlesim   <span class="cmt"># si no está ya instalado</span></code></pre>
+
+      <p>Abre <strong>tres terminales</strong> (recuerda que ROS ya se carga solo desde el <code>~/.bashrc</code>):</p>
+
+      <ol class="steps">
+        <li>
+          <h4>Terminal 1 — Lanzar el simulador</h4>
+          <pre class="code-block shell" data-lang="bash"><code>ros2 run turtlesim turtlesim_node</code></pre>
+          <p>Aparece una ventana con una tortuga.</p>
+        </li>
+        <li>
+          <h4>Terminal 2 — Controlarla con el teclado</h4>
+          <pre class="code-block shell" data-lang="bash"><code>ros2 run turtlesim turtle_teleop_key</code></pre>
+          <p>Con esta terminal enfocada, mueve la tortuga con las <kbd>flechas</kbd>.</p>
+        </li>
+        <li>
+          <h4>Terminal 3 — Inspeccionar lo que ocurre</h4>
+          <pre class="code-block shell" data-lang="bash"><code>ros2 node list            <span class="cmt"># nodos activos</span>
+ros2 topic list           <span class="cmt"># canales de datos</span>
+ros2 topic echo /turtle1/cmd_vel   <span class="cmt"># ve las órdenes de velocidad</span>
+rqt_graph                 <span class="cmt"># dibuja el grafo en una ventana</span></code></pre>
+        </li>
+      </ol>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Mueve la tortuga sin teclado</h4>
+        <p>Publica una velocidad directamente y observa cómo gira:</p>
+        <pre class="code-block shell" data-lang="bash"><code>ros2 topic pub --rate 1 /turtle1/cmd_vel geometry_msgs/msg/Twist \
+  "{linear: {x: 2.0}, angular: {z: 1.8}}"</code></pre>
+      </aside>
+    </section>
+
+    <!-- ============ 9. WORKSPACE ============ -->
+    <section id="workspace">
+      <h2><span class="sec-num">09</span>Workspace y colcon</h2>
+      <p>Un <strong>workspace</strong> (espacio de trabajo) es una carpeta donde guardas y compilas tus propios paquetes. La convención es <code>~/ros2_ws</code> con una subcarpeta <code>src/</code> dentro.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart TB
+    WS["ros2_ws/"]
+    SRC["src/<br/>📦 tu código fuente"]
+    BUILD["build/<br/>🔧 archivos intermedios"]
+    INSTALL["install/<br/>✅ ejecutables + setup.bash"]
+    LOG["log/<br/>📝 registros de compilación"]
+    WS --> SRC
+    WS --> BUILD
+    WS --> INSTALL
+    WS --> LOG
+    SRC -. "colcon build" .-> BUILD
+    BUILD -. genera .-> INSTALL
+        </pre>
+        <p class="diagram-caption"><strong>Figura 3.</strong> Estructura de un workspace. Solo <code>src/</code> lo escribes tú; el resto lo genera <code>colcon</code>.</p>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <h4>Crear la estructura</h4>
+          <pre class="code-block shell" data-lang="bash"><code>mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws</code></pre>
+        </li>
+        <li>
+          <h4>Resolver dependencias con rosdep</h4>
+          <p><code>rosdep</code> instala automáticamente las dependencias del sistema que declaran tus paquetes.</p>
+          <pre class="code-block shell" data-lang="bash"><code>sudo rosdep init      <span class="cmt"># solo la primera vez</span>
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y</code></pre>
+        </li>
+        <li>
+          <h4>Compilar con colcon</h4>
+          <pre class="code-block shell" data-lang="bash"><code>colcon build --symlink-install</code></pre>
+          <p><code>--symlink-install</code> enlaza los archivos en vez de copiarlos: al editar scripts de Python no necesitas recompilar.</p>
+        </li>
+        <li>
+          <h4>Cargar tu workspace (overlay)</h4>
+          <pre class="code-block shell" data-lang="bash"><code>source install/setup.bash</code></pre>
+          <p>Hazlo en cada terminal donde quieras usar tus paquetes, o añádelo al <code>~/.bashrc</code>.</p>
+        </li>
+      </ol>
+
+      <h3>Opciones de colcon que más usarás</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 5 — Comandos de colcon</caption>
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>colcon build</code></td><td>Compila todos los paquetes de <code>src/</code></td></tr>
+          <tr><td><code>colcon build --symlink-install</code></td><td>Enlaza en vez de copiar (ideal para Python)</td></tr>
+          <tr><td><code>colcon build --packages-select &lt;pkg&gt;</code></td><td>Compila solo un paquete</td></tr>
+          <tr><td><code>colcon build --packages-up-to &lt;pkg&gt;</code></td><td>Compila un paquete y sus dependencias</td></tr>
+          <tr><td><code>colcon test</code></td><td>Ejecuta las pruebas</td></tr>
+          <tr><td><code>colcon build --cmake-clean-cache</code></td><td>Fuerza una recompilación limpia</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Compila siempre desde la raíz</h4>
+        <p>Ejecuta <code>colcon build</code> desde <code>~/ros2_ws</code> (la carpeta que contiene <code>src/</code>), <strong>nunca</strong> desde dentro de <code>src/</code>. Tras compilar, abre una terminal nueva o vuelve a hacer <code>source install/setup.bash</code>.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 10. PAQUETES ============ -->
+    <section id="paquetes">
+      <h2><span class="sec-num">10</span>Crear un paquete</h2>
+      <p>Un <strong>paquete</strong> es la unidad mínima de organización y distribución de código en ROS 2. Puede ser de <strong>Python</strong> (<code>ament_python</code>) o de <strong>C++</strong> (<code>ament_cmake</code>).</p>
+
+      <h3>Paquete de Python</h3>
+      <pre class="code-block shell" data-lang="bash"><code>cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_python --license Apache-2.0 \
+  --node-name mi_nodo mi_paquete</code></pre>
+
+      <h3>Paquete de C++</h3>
+      <pre class="code-block shell" data-lang="bash"><code>cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_cmake --license Apache-2.0 \
+  --node-name mi_nodo mi_paquete_cpp</code></pre>
+
+      <h3>¿Qué contiene un paquete?</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 6 — Archivos de un paquete</caption>
+        <thead><tr><th>Archivo</th><th>Python</th><th>C++</th><th>Función</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>package.xml</code></td><td>✔</td><td>✔</td><td>Metadatos y dependencias del paquete</td></tr>
+          <tr><td><code>setup.py</code></td><td>✔</td><td>—</td><td>Instalación y <em>entry points</em> (ejecutables)</td></tr>
+          <tr><td><code>setup.cfg</code></td><td>✔</td><td>—</td><td>Dónde se instalan los scripts</td></tr>
+          <tr><td><code>CMakeLists.txt</code></td><td>—</td><td>✔</td><td>Reglas de compilación de C++</td></tr>
+          <tr><td><code>&lt;pkg&gt;/</code> o <code>src/</code></td><td>✔</td><td>✔</td><td>El código fuente</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-resumen">
+        <h4 class="callout-title">Python o C++, ¿cuál?</h4>
+        <p><strong>Python (rclpy)</strong>: más rápido de escribir, ideal para prototipos, lógica de alto nivel y aprender. <strong>C++ (rclcpp)</strong>: máximo rendimiento y control fino, para bucles de control en tiempo real o nodos exigentes. ROS 2 mezcla ambos sin problema en el mismo robot.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 11. NODOS ============ -->
+    <section id="nodos">
+      <h2><span class="sec-num">11</span>Nodos</h2>
+      <p>Un <strong>nodo</strong> es la unidad de ejecución. En ROS 2 se crea heredando de la clase <code>Node</code>. El esqueleto mínimo en Python:</p>
+
+      <pre class="code-block" data-lang="python"><code>import rclpy
+from rclpy.node import Node
+
+
+class MiNodo(Node):
+    def __init__(self):
+        super().__init__('mi_nodo')          # nombre del nodo
+        self.get_logger().info('¡Nodo iniciado!')
+
+
+def main(args=None):
+    rclpy.init(args=args)                    # inicializa ROS 2
+    nodo = MiNodo()
+    rclpy.spin(nodo)                         # mantiene el nodo vivo
+    nodo.destroy_node()
+    rclpy.shutdown()                         # cierra ROS 2 limpiamente
+
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+      <aside class="callout callout-definicion">
+        <h4 class="callout-title">¿Qué es <code>rclpy.spin()</code>?</h4>
+        <p>Es el bucle de eventos: mantiene el nodo "vivo" esperando mensajes, llamadas a servicios y temporizadores, y ejecuta los <em>callbacks</em> correspondientes. Sin <code>spin</code>, el nodo arrancaría y terminaría de inmediato.</p>
+      </aside>
+
+      <h3>Registrar el ejecutable (setup.py)</h3>
+      <p>Para poder lanzarlo con <code>ros2 run</code>, declara el <em>entry point</em> en <code>setup.py</code>:</p>
+      <pre class="code-block" data-lang="python"><code>entry_points={
+    'console_scripts': [
+        'mi_nodo = mi_paquete.mi_nodo:main',
+    ],
+},</code></pre>
+
+      <p>Compila y ejecuta:</p>
+      <pre class="code-block shell" data-lang="bash"><code>cd ~/ros2_ws
+colcon build --packages-select mi_paquete
+source install/setup.bash
+ros2 run mi_paquete mi_nodo</code></pre>
+    </section>
+
+    <!-- ============ 12. TOPICS ============ -->
+    <section id="topics">
+      <h2><span class="sec-num">12</span>Topics: publicador y suscriptor</h2>
+      <p>Los topics son el mecanismo más usado: un nodo <strong>publica</strong> mensajes en un canal con nombre y otros nodos los <strong>reciben</strong> suscribiéndose. Es asíncrono y de muchos a muchos.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+sequenceDiagram
+    participant P as Publicador
+    participant T as Topic /chatter
+    participant S as Suscriptor
+    loop cada 0.5 s
+        P->>T: publish("Hola N")
+        T->>S: entrega "Hola N"
+        S->>S: callback procesa el mensaje
+    end
+        </pre>
+        <p class="diagram-caption"><strong>Figura 4.</strong> Flujo publicador → topic → suscriptor.</p>
+      </div>
+
+      <h3>Publicador (Python)</h3>
+      <pre class="code-block" data-lang="python"><code>import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+
+class Publicador(Node):
+    def __init__(self):
+        super().__init__('publicador')
+        # (tipo de mensaje, nombre del topic, tamaño de cola)
+        self.pub = self.create_publisher(String, 'chatter', 10)
+        self.timer = self.create_timer(0.5, self.tick)   # 2 Hz
+        self.i = 0
+
+    def tick(self):
+        msg = String()
+        msg.data = f'Hola ROS 2: {self.i}'
+        self.pub.publish(msg)
+        self.get_logger().info(f'Publicando: "{msg.data}"')
+        self.i += 1
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    rclpy.spin(Publicador())
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+      <h3>Suscriptor (Python)</h3>
+      <pre class="code-block" data-lang="python"><code>import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+
+class Suscriptor(Node):
+    def __init__(self):
+        super().__init__('suscriptor')
+        self.sub = self.create_subscription(
+            String, 'chatter', self.callback, 10)
+
+    def callback(self, msg):
+        self.get_logger().info(f'Recibido: "{msg.data}"')
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    rclpy.spin(Suscriptor())
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+      <h3>Probarlos sin escribir código de control</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 run mi_paquete publicador      <span class="cmt"># terminal 1</span>
+ros2 run mi_paquete suscriptor      <span class="cmt"># terminal 2</span>
+
+<span class="cmt"># Inspección desde una tercera terminal:</span>
+ros2 topic list
+ros2 topic echo /chatter            <span class="cmt"># ver los mensajes en vivo</span>
+ros2 topic hz /chatter              <span class="cmt"># frecuencia de publicación</span>
+ros2 topic info /chatter --verbose  <span class="cmt"># tipo, QoS y conexiones</span></code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Demo lista para usar</h4>
+        <p>ROS 2 trae un publicador/suscriptor de ejemplo. Pruébalo sin compilar nada:</p>
+        <pre class="code-block shell" data-lang="bash"><code>ros2 run demo_nodes_cpp talker     <span class="cmt"># publicador</span>
+ros2 run demo_nodes_py listener     <span class="cmt"># suscriptor</span></code></pre>
+      </aside>
+    </section>
+
+    <!-- ============ 13. SERVICIOS ============ -->
+    <section id="servicios">
+      <h2><span class="sec-num">13</span>Servicios: petición y respuesta</h2>
+      <p>Un servicio es una llamada <strong>síncrona</strong>: el cliente envía una petición y espera una única respuesta. Úsalo para acciones puntuales y rápidas, no para flujos continuos.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+sequenceDiagram
+    participant C as Cliente
+    participant S as Servidor /add_two_ints
+    C->>S: Request {a: 2, b: 3}
+    S->>S: callback: sum = a + b
+    S-->>C: Response {sum: 5}
+        </pre>
+        <p class="diagram-caption"><strong>Figura 5.</strong> Patrón petición/respuesta de un servicio.</p>
+      </div>
+
+      <h3>Servidor (Python)</h3>
+      <pre class="code-block" data-lang="python"><code>import rclpy
+from rclpy.node import Node
+from example_interfaces.srv import AddTwoInts
+
+
+class ServidorSuma(Node):
+    def __init__(self):
+        super().__init__('servidor_suma')
+        self.srv = self.create_service(
+            AddTwoInts, 'add_two_ints', self.callback)
+
+    def callback(self, request, response):
+        response.sum = request.a + request.b
+        self.get_logger().info(
+            f'Petición: {request.a} + {request.b} = {response.sum}')
+        return response
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    rclpy.spin(ServidorSuma())
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+      <h3>Llamarlo desde la terminal</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 run mi_paquete servidor_suma                 <span class="cmt"># terminal 1</span>
+
+ros2 service list                                  <span class="cmt"># ver servicios</span>
+ros2 service type /add_two_ints                    <span class="cmt"># ver su tipo</span>
+ros2 service call /add_two_ints example_interfaces/srv/AddTwoInts \
+  "{a: 2, b: 3}"                                    <span class="cmt"># llamar</span></code></pre>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">No bloquees el spin</h4>
+        <p>Llamar a un servicio de forma síncrona <em>dentro</em> de un callback puede provocar un <strong>bloqueo (deadlock)</strong>. Para clientes, usa llamadas asíncronas (<code>call_async</code>) y resuelve la respuesta con un <em>future</em>.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 14. ACCIONES ============ -->
+    <section id="acciones">
+      <h2><span class="sec-num">14</span>Acciones: tareas largas con feedback</h2>
+      <p>Las <strong>acciones</strong> son para tareas que tardan (navegar a un punto, abrir una pinza despacio). Combinan tres partes: un <strong>objetivo</strong> (goal), <strong>feedback</strong> periódico del progreso y un <strong>resultado</strong> final. Además, se pueden <strong>cancelar</strong>.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+sequenceDiagram
+    participant C as Cliente
+    participant S as Servidor de acción
+    C->>S: Goal: "ve a (4, 2)"
+    S-->>C: Goal aceptado
+    loop mientras avanza
+        S-->>C: Feedback: "distancia restante 1.2 m"
+    end
+    S-->>C: Resultado: "llegué" ✅
+        </pre>
+        <p class="diagram-caption"><strong>Figura 6.</strong> Una acción = objetivo + feedback continuo + resultado, con opción de cancelar.</p>
+      </div>
+
+      <h3>Estructura de una acción (.action)</h3>
+      <pre class="code-block" data-lang="text"><code>int32 order          # 1. Goal: lo que pides
+---
+int32[] sequence     # 2. Result: lo que devuelve al terminar
+---
+int32[] partial_sequence  # 3. Feedback: progreso mientras trabaja</code></pre>
+
+      <h3>Probar una acción desde la terminal</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 action list                                   <span class="cmt"># acciones disponibles</span>
+ros2 action info /fibonacci                         <span class="cmt"># servidor y clientes</span>
+
+<span class="cmt"># Enviar un objetivo y mostrar el feedback en vivo:</span>
+ros2 action send_goal /fibonacci \
+  action_tutorials_interfaces/action/Fibonacci "{order: 5}" --feedback</code></pre>
+
+      <aside class="callout callout-resumen">
+        <h4 class="callout-title">Topic vs Servicio vs Acción, en una frase</h4>
+        <p><strong>Topic</strong> = "te aviso constantemente". <strong>Servicio</strong> = "pregunto y me respondes ya". <strong>Acción</strong> = "ponte a ello, avísame de cómo va y dime cuando termines (o lo cancelo)".</p>
+      </aside>
+    </section>
+
+    <!-- ============ 15. PARÁMETROS ============ -->
+    <section id="parametros">
+      <h2><span class="sec-num">15</span>Parámetros</h2>
+      <p>Los <strong>parámetros</strong> permiten configurar un nodo sin tocar el código: velocidad máxima, nombre de un frame, ganancias de un controlador. Se pueden leer y cambiar en tiempo de ejecución.</p>
+
+      <h3>Declarar y usar parámetros (Python)</h3>
+      <pre class="code-block" data-lang="python"><code>import rclpy
+from rclpy.node import Node
+
+
+class NodoConfig(Node):
+    def __init__(self):
+        super().__init__('nodo_config')
+        # declarar con un valor por defecto
+        self.declare_parameter('velocidad_max', 1.5)
+        v = self.get_parameter('velocidad_max').value
+        self.get_logger().info(f'velocidad_max = {v}')
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    rclpy.spin(NodoConfig())
+    rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()</code></pre>
+
+      <h3>Gestionar parámetros desde la terminal</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 param list                              <span class="cmt"># todos los parámetros</span>
+ros2 param get /nodo_config velocidad_max    <span class="cmt"># leer uno</span>
+ros2 param set /nodo_config velocidad_max 2.0  <span class="cmt"># cambiarlo en caliente</span>
+ros2 param dump /nodo_config                 <span class="cmt"># exportar a YAML</span>
+ros2 param load /nodo_config config.yaml     <span class="cmt"># cargar desde YAML</span></code></pre>
+
+      <p>También puedes pasar parámetros al arrancar el nodo:</p>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 run mi_paquete nodo_config --ros-args -p velocidad_max:=3.0</code></pre>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Archivos YAML de parámetros</h4>
+        <p>Para robots reales no se pasan parámetros uno a uno: se cargan desde un archivo <code>.yaml</code> dentro de un <em>launch file</em>. Así separas configuración de código y mantienes perfiles (simulación, real, demo).</p>
+      </aside>
+    </section>
+
+    <!-- ============ 16. INTERFACES ============ -->
+    <section id="interfaces">
+      <h2><span class="sec-num">16</span>Interfaces personalizadas (msg / srv / action)</h2>
+      <p>Cuando los tipos estándar no encajan, defines tus propias <strong>interfaces</strong>: la estructura de tus mensajes (<code>.msg</code>), servicios (<code>.srv</code>) y acciones (<code>.action</code>). Se generan en un paquete <code>ament_cmake</code>.</p>
+
+      <ol class="steps">
+        <li>
+          <h4>Crear un paquete de interfaces</h4>
+          <pre class="code-block shell" data-lang="bash"><code>cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_cmake mis_interfaces
+mkdir -p mis_interfaces/msg mis_interfaces/srv</code></pre>
+        </li>
+        <li>
+          <h4>Definir un mensaje</h4>
+          <p>Archivo <code>msg/Temperatura.msg</code>:</p>
+          <pre class="code-block" data-lang="text"><code>float64 celsius
+string  sensor_id
+int64   timestamp</code></pre>
+        </li>
+        <li>
+          <h4>Declarar la generación en <code>CMakeLists.txt</code></h4>
+          <pre class="code-block" data-lang="cmake"><code>find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Temperatura.msg"
+  "srv/Suma.srv"
+)</code></pre>
+        </li>
+        <li>
+          <h4>Añadir dependencias en <code>package.xml</code></h4>
+          <pre class="code-block" data-lang="xml"><code>&lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;
+&lt;exec_depend&gt;rosidl_default_runtime&lt;/exec_depend&gt;
+&lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;</code></pre>
+        </li>
+        <li>
+          <h4>Compilar y verificar</h4>
+          <pre class="code-block shell" data-lang="bash"><code>cd ~/ros2_ws
+colcon build --packages-select mis_interfaces
+source install/setup.bash
+ros2 interface show mis_interfaces/msg/Temperatura</code></pre>
+        </li>
+      </ol>
+
+      <h3>Tipos de campo más comunes</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 7 — Tipos primitivos en interfaces</caption>
+        <thead><tr><th>Tipo</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><code>bool</code></td><td>Booleano (true/false)</td></tr>
+          <tr><td><code>int8 … int64 / uint8 …</code></td><td>Enteros con y sin signo</td></tr>
+          <tr><td><code>float32 / float64</code></td><td>Decimales</td></tr>
+          <tr><td><code>string</code></td><td>Texto</td></tr>
+          <tr><td><code>tipo[]</code></td><td>Array dinámico (p. ej. <code>int32[]</code>)</td></tr>
+          <tr><td><code>tipo[N]</code></td><td>Array de tamaño fijo (p. ej. <code>float64[9]</code>)</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 17. LAUNCH ============ -->
+    <section id="launch">
+      <h2><span class="sec-num">17</span>Archivos launch</h2>
+      <p>Un robot real arranca decenas de nodos. Lanzarlos a mano uno por uno sería inviable. Los <strong>launch files</strong> arrancan y configuran varios nodos a la vez con un solo comando.</p>
+
+      <h3>Launch en Python</h3>
+      <p>Crea <code>launch/demo.launch.py</code> dentro de tu paquete:</p>
+      <pre class="code-block" data-lang="python"><code>from launch import LaunchDescription
+from launch_ros.actions import Node
+
+
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package='turtlesim',
+            executable='turtlesim_node',
+            name='sim'
+        ),
+        Node(
+            package='mi_paquete',
+            executable='publicador',
+            name='publicador',
+            parameters=[{'velocidad_max': 2.0}]
+        ),
+    ])</code></pre>
+
+      <h3>Ejecutarlo</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 launch mi_paquete demo.launch.py</code></pre>
+
+      <aside class="callout callout-warn">
+        <h4 class="callout-title">Instala la carpeta launch</h4>
+        <p>Para que <code>ros2 launch</code> encuentre el archivo, debes instalar la carpeta <code>launch/</code>. En paquetes Python, añade en <code>setup.py</code> dentro de <code>data_files</code>:</p>
+        <pre class="code-block" data-lang="python"><code>import os
+from glob import glob
+# ...
+data_files=[
+    # ...
+    (os.path.join('share', package_name, 'launch'),
+     glob(os.path.join('launch', '*launch.py'))),
+],</code></pre>
+      </aside>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">¿Python, XML o YAML?</h4>
+        <p>ROS 2 admite launch files en los tres formatos. <strong>Python</strong> es el más potente (lógica, condicionales, variables); XML y YAML son más simples y declarativos. Para empezar, usa Python.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 18. HERRAMIENTAS ============ -->
+    <section id="herramientas">
+      <h2><span class="sec-num">18</span>Herramientas imprescindibles</h2>
+      <p>ROS 2 brilla por su ecosistema de herramientas de inspección, visualización y depuración. Estas son las que usarás a diario.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <span class="ico">🕸️</span>
+          <h4>rqt_graph</h4>
+          <p>Dibuja el grafo de nodos y topics en vivo. Perfecto para ver "quién habla con quién".</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🖼️</span>
+          <h4>RViz2</h4>
+          <p>Visualizador 3D: muestra sensores, mapas, modelos del robot, trayectorias y transformaciones.</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">💾</span>
+          <h4>ros2 bag</h4>
+          <p>Graba y reproduce todos los mensajes de una sesión. Indispensable para depurar y entrenar modelos.</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🌳</span>
+          <h4>tf2</h4>
+          <p>Sistema de transformaciones: relaciona los sistemas de coordenadas (base, sensor, mundo) en el tiempo.</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🩺</span>
+          <h4>ros2 doctor</h4>
+          <p>Diagnostica problemas de configuración, red y versiones. Ejecútalo cuando "algo no conecta".</p>
+        </div>
+        <div class="concept-card">
+          <span class="ico">🐢</span>
+          <h4>Gazebo</h4>
+          <p>Simulador físico 3D. Prueba tu robot sin hardware real antes de pasar al mundo físico.</p>
+        </div>
+      </div>
+
+      <h3>Grabar y reproducir con ros2 bag</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 bag record -a                       <span class="cmt"># graba TODOS los topics</span>
+ros2 bag record /chatter /turtle1/cmd_vel  <span class="cmt"># o topics concretos</span>
+ros2 bag info rosbag2_2026_06_08-12_00_00  <span class="cmt"># detalles de una grabación</span>
+ros2 bag play rosbag2_2026_06_08-12_00_00  <span class="cmt"># reproducir lo grabado</span></code></pre>
+
+      <h3>Inspeccionar transformaciones (tf2)</h3>
+      <pre class="code-block shell" data-lang="bash"><code>ros2 run tf2_tools view_frames           <span class="cmt"># genera un PDF del árbol de frames</span>
+ros2 run tf2_ros tf2_echo base_link laser <span class="cmt"># transformación entre dos frames</span></code></pre>
+    </section>
+
+    <!-- ============ 19. COMANDOS ============ -->
+    <section id="comandos">
+      <h2><span class="sec-num">19</span>Comandos esenciales (CLI)</h2>
+      <p>Toda la CLI de ROS 2 sigue el patrón <code>ros2 &lt;comando&gt; &lt;subcomando&gt; [args]</code>. Esta es tu chuleta de referencia.</p>
+
+      <h3>Nodos y ejecución</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2 run &lt;pkg&gt; &lt;exe&gt;</code></td><td>Ejecuta un nodo de un paquete</td></tr>
+          <tr><td><code>ros2 launch &lt;pkg&gt; &lt;file&gt;</code></td><td>Lanza varios nodos desde un launch file</td></tr>
+          <tr><td><code>ros2 node list</code></td><td>Lista los nodos activos</td></tr>
+          <tr><td><code>ros2 node info /&lt;nodo&gt;</code></td><td>Pubs, subs, servicios y parámetros del nodo</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Topics</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2 topic list -t</code></td><td>Lista topics con su tipo</td></tr>
+          <tr><td><code>ros2 topic echo /&lt;topic&gt;</code></td><td>Muestra los mensajes en vivo</td></tr>
+          <tr><td><code>ros2 topic info /&lt;topic&gt; -v</code></td><td>Tipo, QoS, nº de pubs/subs</td></tr>
+          <tr><td><code>ros2 topic hz /&lt;topic&gt;</code></td><td>Frecuencia de publicación</td></tr>
+          <tr><td><code>ros2 topic bw /&lt;topic&gt;</code></td><td>Ancho de banda usado</td></tr>
+          <tr><td><code>ros2 topic pub /&lt;topic&gt; &lt;tipo&gt; '&lt;datos&gt;'</code></td><td>Publica un mensaje manualmente</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Servicios, acciones y parámetros</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2 service list -t</code></td><td>Lista servicios con su tipo</td></tr>
+          <tr><td><code>ros2 service call /&lt;srv&gt; &lt;tipo&gt; '&lt;datos&gt;'</code></td><td>Llama a un servicio</td></tr>
+          <tr><td><code>ros2 action list -t</code></td><td>Lista acciones con su tipo</td></tr>
+          <tr><td><code>ros2 action send_goal /&lt;act&gt; &lt;tipo&gt; '&lt;goal&gt;' --feedback</code></td><td>Envía un objetivo con feedback</td></tr>
+          <tr><td><code>ros2 param list</code></td><td>Lista parámetros de todos los nodos</td></tr>
+          <tr><td><code>ros2 param get/set /&lt;nodo&gt; &lt;param&gt;</code></td><td>Lee o cambia un parámetro</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Paquetes e interfaces</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2 pkg create …</code></td><td>Crea un paquete nuevo</td></tr>
+          <tr><td><code>ros2 pkg list</code></td><td>Lista todos los paquetes instalados</td></tr>
+          <tr><td><code>ros2 pkg executables &lt;pkg&gt;</code></td><td>Ejecutables que ofrece un paquete</td></tr>
+          <tr><td><code>ros2 pkg prefix &lt;pkg&gt;</code></td><td>Ruta de instalación del paquete</td></tr>
+          <tr><td><code>ros2 interface show &lt;tipo&gt;</code></td><td>Muestra la estructura de un mensaje/srv/action</td></tr>
+          <tr><td><code>ros2 interface list</code></td><td>Lista todas las interfaces disponibles</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>Diagnóstico y datos</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2 doctor</code> / <code>ros2 doctor --report</code></td><td>Diagnóstico del sistema (resumen / detallado)</td></tr>
+          <tr><td><code>ros2 bag record -a</code></td><td>Graba todos los topics</td></tr>
+          <tr><td><code>ros2 bag play &lt;carpeta&gt;</code></td><td>Reproduce una grabación</td></tr>
+          <tr><td><code>rqt_graph</code></td><td>Visualiza el grafo de nodos/topics</td></tr>
+          <tr><td><code>rviz2</code></td><td>Abre el visualizador 3D</td></tr>
+          <tr><td><code>colcon build --symlink-install</code></td><td>Compila el workspace</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-tip">
+        <h4 class="callout-title">Autocompletado y ayuda</h4>
+        <p>Pulsa <kbd>Tab</kbd> dos veces tras cualquier comando para autocompletar nombres de paquetes, nodos y topics. Y añade <code>--help</code> a cualquier comando o subcomando para ver sus opciones: <code>ros2 topic pub --help</code>.</p>
+      </aside>
+    </section>
+
+    <!-- ============ 20. PRÁCTICAS ============ -->
+    <section id="practicas">
+      <h2><span class="sec-num">20</span>Buenas prácticas y errores comunes</h2>
+
+      <h3>Buenas prácticas</h3>
+      <ul>
+        <li><strong>Nombra bien tus nodos y topics:</strong> usa nombres descriptivos y en minúsculas con guiones bajos (<code>/camera_front/image_raw</code>).</li>
+        <li><strong>Un nodo, una responsabilidad:</strong> evita nodos gigantes. La modularidad facilita pruebas y reutilización.</li>
+        <li><strong>Configura con parámetros, no con constantes:</strong> nada de valores "mágicos" incrustados en el código.</li>
+        <li><strong>Usa launch files + YAML</strong> desde el principio para arrancar el sistema de forma reproducible.</li>
+        <li><strong>Compila con <code>--symlink-install</code></strong> para iterar rápido en Python.</li>
+        <li><strong>Versiona tu workspace con Git</strong>, pero ignora <code>build/</code>, <code>install/</code> y <code>log/</code> en el <code>.gitignore</code>.</li>
+      </ul>
+
+      <h3>Errores frecuentes (y su solución)</h3>
+      <div class="table-wrap">
+      <table class="ieee-table">
+        <caption>Tabla 8 — Problemas habituales</caption>
+        <thead><tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr></thead>
+        <tbody>
+          <tr><td><code>ros2: command not found</code></td><td>No cargaste el entorno</td><td><code>source /opt/ros/jazzy/setup.bash</code></td></tr>
+          <tr><td><code>Package not found</code></td><td>No cargaste tu overlay</td><td><code>source install/setup.bash</code> tras compilar</td></tr>
+          <tr><td>Publico pero nadie recibe</td><td>QoS incompatible o nombre de topic distinto</td><td>Compara con <code>ros2 topic info -v</code></td></tr>
+          <tr><td>Los nodos no se ven entre sí</td><td><code>ROS_DOMAIN_ID</code> distinto o discovery limitado</td><td>Iguala el ID; revisa el rango de descubrimiento</td></tr>
+          <tr><td>Cambios en Python no surten efecto</td><td>Compilaste sin symlink y no recargaste</td><td><code>colcon build --symlink-install</code> + nueva terminal</td></tr>
+          <tr><td><code>launch file not found</code></td><td>No instalaste la carpeta <code>launch/</code></td><td>Añádela a <code>data_files</code> y recompila</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <aside class="callout callout-resumen">
+        <h4 class="callout-title">El flujo de trabajo, en 6 pasos</h4>
+        <ol style="margin-bottom:0;">
+          <li>Carga ROS 2: <code>source /opt/ros/&lt;distro&gt;/setup.bash</code></li>
+          <li>Crea/edita tu paquete dentro de <code>~/ros2_ws/src</code></li>
+          <li>Resuelve dependencias: <code>rosdep install …</code></li>
+          <li>Compila: <code>colcon build --symlink-install</code></li>
+          <li>Carga tu overlay: <code>source install/setup.bash</code></li>
+          <li>Ejecuta y depura: <code>ros2 run …</code>, <code>rqt_graph</code>, <code>ros2 doctor</code></li>
+        </ol>
+      </aside>
+
+      <h3>Para seguir aprendiendo</h3>
+      <ul>
+        <li><strong>Documentación oficial:</strong> <a href="https://docs.ros.org" target="_blank" rel="noopener">docs.ros.org</a> — tutoriales paso a paso por distribución.</li>
+        <li><strong>Nav2</strong> (navegación autónoma), <strong>MoveIt 2</strong> (manipulación), <strong>ros2_control</strong> (control de hardware).</li>
+        <li><strong>Simulación:</strong> Gazebo y la integración <code>ros_gz</code>.</li>
+        <li><strong>Comunidad:</strong> <a href="https://robotics.stackexchange.com" target="_blank" rel="noopener">Robotics Stack Exchange</a> y el foro <a href="https://discourse.ros.org" target="_blank" rel="noopener">ROS Discourse</a>.</li>
+      </ul>
+    </section>
+
+    <div class="footer-note">
+      Curso de ROS 2 · elaborado como material de estudio personal ·
+      válido para <strong>Jazzy Jalisco</strong> y <strong>Humble Hawksbill</strong>.<br>
+      Comandos verificados contra la documentación oficial de ROS 2 · Paleta IEEE sobria · 2026
+    </div>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
