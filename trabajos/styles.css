@@ -145,6 +145,110 @@ select:focus, input:focus, textarea:focus {
   border-color: var(--primary);
 }
 
+/* Tarea Diaria */
+.daily-task {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+#dt-text {
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
+}
+
+.dt-progress { margin-top: 16px; }
+
+.dt-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dt-progress-row label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  min-width: 90px;
+}
+
+.dt-progress-row input[type="range"] {
+  flex: 1;
+  width: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.dt-progress-row .progress-value {
+  font-size: 1rem;
+  min-width: 46px;
+}
+
+.dt-bar {
+  height: 10px;
+  background: var(--bg);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dt-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 5px;
+  background: var(--orange);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.dt-motivation {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.dt-moti-emoji { font-size: 2rem; line-height: 1; }
+
+.dt-moti-body { flex: 1; }
+
+.dt-moti-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.dt-moti-text {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.dt-motivation.celebrate {
+  background: rgba(16, 185, 129, 0.1);
+  animation: dt-celebrate 1.2s ease-in-out 2;
+}
+
+@keyframes dt-celebrate {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.015); }
+}
+
+.dt-history { margin-top: 18px; }
+
+.dt-history .ra-history-bars { height: 70px; }
+
 /* Informe Diario */
 .daily-report {
   background: rgba(30, 41, 59, 0.5);

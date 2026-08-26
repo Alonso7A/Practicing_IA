@@ -325,6 +325,253 @@ function escapeICS(s) {
   return s.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
 }
 
+// ===== Tarea Diaria =====
+// Una tarea principal por día + su avance (slider) + un mensaje motivador
+// que cambia según qué tan avanzado estés.
+const DAILY_KEY = 'mi-tarea-diaria-v1';
+
+function loadDaily() {
+  try {
+    return JSON.parse(localStorage.getItem(DAILY_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveDaily() {
+  localStorage.setItem(DAILY_KEY, JSON.stringify(daily));
+}
+
+let daily = loadDaily();
+
+const dtDate = document.getElementById('dt-date');
+const dtText = document.getElementById('dt-text');
+const dtSlider = document.getElementById('dt-slider');
+const dtValue = document.getElementById('dt-value');
+const dtFill = document.getElementById('dt-fill');
+const dtIndicator = document.getElementById('dt-indicator');
+const dtStatus = document.getElementById('dt-status');
+const dtMotivation = document.getElementById('dt-motivation');
+
+let dtStatusTimer = null;
+let dtLastBand = null; // para no cambiar la frase en cada pixel del slider
+
+// Bandas de motivación: de menor a mayor avance.
+const MOTI_BANDS = [
+  {
+    min: 0, max: 0, key: 'inicio', emoji: '🌱', color: 'var(--text-dim)',
+    title: 'Todavía no arrancas',
+    msgs: [
+      'El primer paso es el más pesado, pero también el más corto. Dale 5 minutos y verás cómo sigue solo.',
+      'No necesitas ganas, necesitas empezar. Las ganas llegan después del primer movimiento.',
+      'Hoy no tiene que ser perfecto, solo tiene que empezar. Mueve el slider aunque sea a 10%.',
+      'Una tarea escrita ya es media tarea pensada. Ahora vamos por el primer avance.',
+    ],
+  },
+  {
+    min: 1, max: 24, key: 'bajo', emoji: '🚶', color: 'var(--red)',
+    title: 'Ya empezaste (y eso cuenta)',
+    msgs: [
+      'Arrancar es lo más difícil y ya lo hiciste. Ahora solo se trata de no soltar.',
+      'Vas lento, pero vas. Avanzar poco sigue siendo infinitamente mejor que no avanzar.',
+      'Poquito a poco también se llega. Ponte 25 minutos de reloj y no pares hasta que suene.',
+      'Nadie termina en el minuto uno. Estás justo donde tienes que estar: en movimiento.',
+    ],
+  },
+  {
+    min: 25, max: 49, key: 'medio-bajo', emoji: '🔥', color: 'var(--orange)',
+    title: 'Tomando ritmo',
+    msgs: [
+      'Ya agarraste impulso. No revises el celular ahora, este es el tramo donde se gana el día.',
+      'Un cuarto del camino hecho. Sigue con ese ritmo y para el mediodía esto ya es historia.',
+      'Lo difícil ya fue empezar. Lo que queda es solo repetir lo que ya estás haciendo bien.',
+      'Vas en subida, y la subida es la parte que te hace fuerte. Continúa.',
+    ],
+  },
+  {
+    min: 50, max: 74, key: 'medio', emoji: '💪', color: 'var(--yellow)',
+    title: '¡Mitad del camino!',
+    msgs: [
+      'Ya pasaste la mitad. Lo que te queda es menos de lo que ya venciste.',
+      'Mira atrás: todo eso ya lo hiciste tú. Lo que falta es más de lo mismo.',
+      'Estás en la cima de la loma. De aquí en adelante todo pesa menos.',
+      'Medio camino andado. Un empujón más y hoy cierras con la tarea cumplida.',
+    ],
+  },
+  {
+    min: 75, max: 99, key: 'alto', emoji: '🚀', color: 'var(--blue)',
+    title: 'Ya casi lo tienes',
+    msgs: [
+      'Estás a nada. No aflojes justo ahora que la meta ya se ve.',
+      'El último tramo es el que separa "casi" de "hecho". Ve por él.',
+      '¡Muy cerca! Termina ahora y disfruta el resto del día sin esa deuda pendiente.',
+      'Ya hiciste lo más pesado. Lo que falta es solo darle el cierre.',
+    ],
+  },
+  {
+    min: 100, max: 100, key: 'completo', emoji: '🏆', color: 'var(--green)',
+    title: '¡Tarea del día completada!',
+    msgs: [
+      '¡Lo lograste! Hoy cumpliste con lo que te propusiste. Date el crédito, te lo ganaste.',
+      '100%. Así se construye la disciplina: un día a la vez, como hoy.',
+      '¡Excelente! Descansa tranquilo, hoy hiciste lo que tenías que hacer.',
+      'Meta cumplida 🎉 Recuerda cómo se siente esto para los días en que cueste arrancar.',
+    ],
+  },
+];
+
+function bandForProgress(p) {
+  return MOTI_BANDS.find(b => p >= b.min && p <= b.max) || MOTI_BANDS[0];
+}
+
+function getDailyEntry(key) {
+  const e = daily[key];
+  if (!e) return { text: '', progress: 0 };
+  return { text: e.text || '', progress: e.progress || 0 };
+}
+
+function updateDtIndicator() {
+  const written = dtText.value.trim().length > 0;
+  const done = parseInt(dtSlider.value, 10) === 100;
+  dtIndicator.classList.toggle('filled', written && done);
+  dtIndicator.textContent = !written ? '!' : (done ? '✓' : '…');
+  dtIndicator.title = !written
+    ? 'Aún no has escrito la tarea de este día'
+    : (done ? 'Tarea de este día completada' : 'Tarea escrita, todavía en progreso');
+}
+
+function renderMotivation(force) {
+  const p = parseInt(dtSlider.value, 10);
+  const band = bandForProgress(p);
+  const emptyTask = !dtText.value.trim();
+
+  // Solo se sortea una frase nueva cuando cambias de banda, así no parpadea
+  // mientras arrastras el slider.
+  if (force || band.key !== dtLastBand) {
+    const msg = band.msgs[Math.floor(Math.random() * band.msgs.length)];
+    document.getElementById('dt-moti-text').textContent = emptyTask
+      ? 'Escribe arriba cuál es tu tarea principal de hoy y empieza a marcar tu avance.'
+      : msg;
+    dtLastBand = band.key;
+  } else if (emptyTask) {
+    document.getElementById('dt-moti-text').textContent =
+      'Escribe arriba cuál es tu tarea principal de hoy y empieza a marcar tu avance.';
+  }
+
+  document.getElementById('dt-moti-emoji').textContent = emptyTask ? '📝' : band.emoji;
+  document.getElementById('dt-moti-title').textContent = emptyTask ? 'Sin tarea para este día' : band.title;
+  dtMotivation.style.borderLeftColor = emptyTask ? 'var(--primary)' : band.color;
+  dtMotivation.classList.toggle('celebrate', !emptyTask && p === 100);
+}
+
+function renderDtProgress() {
+  const p = parseInt(dtSlider.value, 10);
+  const band = bandForProgress(p);
+  dtValue.textContent = p + '%';
+  dtFill.style.width = p + '%';
+  dtFill.style.background = p === 0 ? 'var(--border)' : band.color;
+  dtSlider.style.accentColor = p === 0 ? 'var(--primary)' : band.color;
+}
+
+function renderDtHistory() {
+  const bars = document.getElementById('dt-history-bars');
+  bars.innerHTML = '';
+  const cur = dtDate.value || dateKey();
+  const entries = Object.entries(daily)
+    .filter(([, e]) => (e.text || '').trim())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .slice(-7);
+
+  if (!entries.length) {
+    bars.innerHTML = '<span class="ra-hbar-day">Sin tareas registradas todavía</span>';
+    return;
+  }
+
+  for (const [date, e] of entries) {
+    const p = e.progress || 0;
+    const band = bandForProgress(p);
+    const day = date.slice(8) + '/' + date.slice(5, 7); // dd/mm
+    const wrap = document.createElement('div');
+    wrap.className = 'ra-hbar' + (date === cur ? ' current' : '');
+    wrap.title = `${date}: ${p}% — ${(e.text || '').slice(0, 60)}`;
+    wrap.innerHTML =
+      `<div class="ra-hbar-track"><div class="ra-hbar-fill" style="height:${Math.max(p, 2)}%; background:${p === 0 ? 'var(--border)' : band.color}"></div></div>` +
+      `<div class="ra-hbar-day">${day}</div>`;
+    bars.appendChild(wrap);
+  }
+}
+
+function flashDtSaved() {
+  dtStatus.textContent = 'Guardado ✓';
+  dtStatus.classList.add('show');
+  clearTimeout(dtStatusTimer);
+  dtStatusTimer = setTimeout(() => dtStatus.classList.remove('show'), 1500);
+}
+
+function saveDailyEntry() {
+  const key = dtDate.value || dateKey();
+  const text = dtText.value;
+  const progress = parseInt(dtSlider.value, 10);
+  if (text.trim() || progress > 0) {
+    daily[key] = { text, progress };
+  } else {
+    delete daily[key];
+  }
+  saveDaily();
+  flashDtSaved();
+  renderDtHistory();
+}
+
+function loadDailyForDate() {
+  const key = dtDate.value || dateKey();
+  const e = getDailyEntry(key);
+  dtText.value = e.text;
+  dtSlider.value = e.progress;
+  dtStatus.classList.remove('show');
+  dtLastBand = null;          // al cambiar de día, frase nueva
+  renderDtProgress();
+  renderMotivation(true);
+  updateDtIndicator();
+  renderDtHistory();
+}
+
+function shiftDailyDate(delta) {
+  const d = new Date((dtDate.value || dateKey()) + 'T00:00:00');
+  d.setDate(d.getDate() + delta);
+  dtDate.value = dateKey(d);
+  loadDailyForDate();
+}
+
+dtDate.value = dateKey();
+loadDailyForDate();
+
+dtDate.addEventListener('change', loadDailyForDate);
+document.getElementById('dt-prev').addEventListener('click', () => shiftDailyDate(-1));
+document.getElementById('dt-next').addEventListener('click', () => shiftDailyDate(1));
+
+dtText.addEventListener('input', () => {
+  saveDailyEntry();
+  updateDtIndicator();
+  renderMotivation(false);
+});
+
+dtSlider.addEventListener('input', () => {
+  renderDtProgress();
+  renderMotivation(false);
+  updateDtIndicator();
+});
+
+// Guardar al soltar el slider (no en cada movimiento)
+dtSlider.addEventListener('change', saveDailyEntry);
+
+document.getElementById('dt-complete').addEventListener('click', () => {
+  dtSlider.value = 100;
+  renderDtProgress();
+  renderMotivation(false);
+  updateDtIndicator();
+  saveDailyEntry();
+});
+
 // ===== Informe Diario =====
 const REPORT_KEY = 'mis-informes-v1';
 

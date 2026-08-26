@@ -31,6 +31,53 @@
       </div>
     </section>
 
+    <section class="daily-task">
+      <div class="daily-header">
+        <h2>
+          Tarea Diaria
+          <span id="dt-indicator" class="report-indicator" title="Aún no has escrito la tarea de este día">!</span>
+        </h2>
+        <div class="daily-date-nav">
+          <button id="dt-prev" class="btn-action" type="button" title="Día anterior">‹</button>
+          <input type="date" id="dt-date">
+          <button id="dt-next" class="btn-action" type="button" title="Día siguiente">›</button>
+        </div>
+      </div>
+
+      <textarea id="dt-text" rows="3"
+        placeholder="¿Cuál es tu tarea principal de hoy? Escríbela en una frase clara: 'Terminar el informe de laboratorio', 'Estudiar 2 horas de ROS 2'..."></textarea>
+
+      <div class="dt-progress">
+        <div class="dt-progress-row">
+          <label for="dt-slider">Mi progreso</label>
+          <input type="range" id="dt-slider" min="0" max="100" step="5" value="0">
+          <span id="dt-value" class="progress-value">0%</span>
+        </div>
+        <div class="dt-bar"><div id="dt-fill" class="dt-fill"></div></div>
+      </div>
+
+      <div id="dt-motivation" class="dt-motivation">
+        <span id="dt-moti-emoji" class="dt-moti-emoji">🌱</span>
+        <div class="dt-moti-body">
+          <div id="dt-moti-title" class="dt-moti-title">—</div>
+          <div id="dt-moti-text" class="dt-moti-text">—</div>
+        </div>
+      </div>
+
+      <div class="daily-footer">
+        <span id="dt-status" class="report-status"></span>
+        <div class="daily-footer-actions">
+          <span class="report-hint">Se guarda solo</span>
+          <button id="dt-complete" class="btn btn-primary btn-small" type="button">Completar al 100% ✓</button>
+        </div>
+      </div>
+
+      <div class="dt-history">
+        <div class="ra-history-head">🗓️ Tus últimos días</div>
+        <div id="dt-history-bars" class="ra-history-bars"></div>
+      </div>
+    </section>
+
     <section class="daily-report">
       <div class="daily-header">
         <h2>
