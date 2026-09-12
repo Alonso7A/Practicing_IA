@@ -145,6 +145,255 @@ select:focus, input:focus, textarea:focus {
   border-color: var(--primary);
 }
 
+/* ===== Calendario de plazos ===== */
+.calendar {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* Color del estado de plazo (anillo, contador y borde de la tarea) */
+.st-ok      { --ring: var(--blue); }
+.st-warning { --ring: var(--yellow); }
+.st-urgent  { --ring: var(--orange); }
+.st-overdue { --ring: var(--red); }
+.st-done    { --ring: var(--green); }
+
+.cal-title {
+  min-width: 140px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.cal-today-btn { margin-left: 6px; font-size: 0.8rem !important; }
+
+.cal-body {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .cal-body { grid-template-columns: 1fr; }
+}
+
+.cal-weekdays,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-weekdays {
+  margin-bottom: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cal-cell {
+  --cell-bg: var(--bg);
+  position: relative;
+  aspect-ratio: 1 / 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cell-bg);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cal-cell:hover { border-color: var(--border); }
+.cal-cell.other { opacity: 0.4; }
+.cal-cell.selected { --cell-bg: #1c2348; }
+.cal-cell.today { border-color: var(--primary); }
+
+.cal-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cal-cell.today .cal-num { font-weight: 800; color: #a5b4fc; }
+
+/* Tareas completadas con plazo ese día: fondo verde */
+.cal-num.has-done,
+.cal-cell.today .cal-num.has-done {
+  background: var(--green);
+  color: #fff;
+}
+
+/* Tareas pendientes con plazo ese día: anillo separado por un hueco,
+   así se distingue incluso encima del fondo verde */
+.cal-num.has-pending {
+  box-shadow: 0 0 0 2px var(--cell-bg), 0 0 0 4px var(--ring);
+}
+
+.cal-num.has-pending:not(.has-done) {
+  background: color-mix(in srgb, var(--ring) 22%, transparent);
+}
+
+.cal-badge {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--ring);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 15px;
+  text-align: center;
+}
+
+.cal-cell.st-warning .cal-badge { color: #1e293b; }
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 12px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.cal-legend span { display: inline-flex; align-items: center; gap: 7px; }
+
+.cal-sw {
+  --cell-bg: var(--bg-soft);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.cal-sw.pend { box-shadow: 0 0 0 1.5px var(--cell-bg), 0 0 0 3px var(--ring); }
+.cal-sw.pend:not(.done) { background: color-mix(in srgb, var(--ring) 22%, transparent); }
+.cal-sw.done { background: var(--green); }
+
+.cal-badge-demo {
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 0.62rem;
+  line-height: 15px;
+  text-align: center;
+}
+
+/* Panel del día seleccionado */
+.cal-day {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cal-day-head h3 { font-size: 0.95rem; color: var(--text); }
+.cal-day-summary { font-size: 0.75rem; color: var(--text-dim); }
+
+.cal-day-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.cal-day-list:empty { display: none; }
+
+.cal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--ring);
+  border-radius: 6px;
+}
+
+.cal-check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--ring);
+  background: transparent;
+  color: transparent;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cal-check:hover { color: var(--ring); }
+
+.cal-item.is-done .cal-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.cal-item-body { flex: 1; min-width: 0; }
+
+.cal-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cal-item.is-done .cal-item-title {
+  text-decoration: line-through;
+  color: var(--text-dim);
+}
+
+.cal-item-meta { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+
+.cal-day-empty {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.cal-next-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-style: normal;
+  color: #a5b4fc;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cal-day-add { align-self: flex-start; }
+
 /* Tarea Diaria */
 .daily-task {
   background: rgba(30, 41, 59, 0.5);

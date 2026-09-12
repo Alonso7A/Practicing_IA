@@ -99,6 +99,8 @@ function render() {
   document.getElementById('count-done').textContent = done.length;
   document.getElementById('empty-active').style.display = active.length ? 'none' : 'block';
   document.getElementById('empty-done').style.display = done.length ? 'none' : 'block';
+
+  renderCalendar();
 }
 
 function makeCard(task) {
@@ -164,7 +166,8 @@ function escapeHtml(s) {
 const modal = document.getElementById('modal');
 const form = document.getElementById('task-form');
 
-function openModal(task = null) {
+// deadlineDay (YYYY-MM-DD, opcional): precarga el plazo para ese día a las 23:59
+function openModal(task = null, deadlineDay = null) {
   editingId = task ? task.id : null;
   document.getElementById('modal-title').textContent = task ? 'Editar tarea' : 'Nueva tarea';
   if (task) {
@@ -181,7 +184,7 @@ function openModal(task = null) {
     document.getElementById('f-start').value = local;
     const tomorrow = new Date(now.getTime() + 86400000 - now.getTimezoneOffset() * 60000)
       .toISOString().slice(0,16);
-    document.getElementById('f-deadline').value = tomorrow;
+    document.getElementById('f-deadline').value = deadlineDay ? deadlineDay + 'T23:59' : tomorrow;
   }
   modal.classList.remove('hidden');
 }
@@ -324,6 +327,148 @@ function toICSDate(iso) {
 function escapeICS(s) {
   return s.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
 }
+
+// ===== Calendario de plazos =====
+// Marca cada tarea en el día de su fecha límite:
+//  - Fondo verde en el número  -> hay tareas completadas con plazo ese día.
+//  - Anillo + contador de color -> hay tareas PENDIENTES con plazo ese día
+//    (se dibuja con un hueco alrededor para que se note aunque el fondo sea verde).
+const CAL_RANK = { ok: 0, warning: 1, urgent: 2, overdue: 3 };
+const calGrid = document.getElementById('cal-grid');
+let calMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // primer día del mes visible
+let calSelected = dateKey();
+
+function calFilteredTasks() {
+  const filter = document.getElementById('filter-type').value;
+  return tasks.filter(t => (filter === 'all' || t.type === filter) && t.deadline);
+}
+
+function tasksByDeadlineDay() {
+  const map = new Map();
+  for (const t of calFilteredTasks()) {
+    const k = t.deadline.slice(0, 10); // "YYYY-MM-DDTHH:MM" local -> "YYYY-MM-DD"
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push(t);
+  }
+  return map;
+}
+
+function daySummary(list) {
+  let pending = 0, done = 0, worst = null;
+  for (const t of list) {
+    if (t.completed) { done++; continue; }
+    pending++;
+    const s = getTimeStatus(t);
+    if (worst === null || CAL_RANK[s] > CAL_RANK[worst]) worst = s;
+  }
+  return { pending, done, worst };
+}
+
+function renderCalendar() {
+  const byDay = tasksByDeadlineDay();
+  const today = dateKey();
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const monthLabel = calMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+  document.getElementById('cal-title').textContent = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+  // La semana empieza en lunes (getDay: 0 = domingo)
+  const offset = (new Date(y, m, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const cells = Math.ceil((offset + daysInMonth) / 7) * 7;
+
+  calGrid.innerHTML = '';
+  for (let i = 0; i < cells; i++) {
+    const d = new Date(y, m, 1 - offset + i);
+    const key = dateKey(d);
+    const list = byDay.get(key) || [];
+    const s = daySummary(list);
+
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.dataset.day = key;
+    cell.className = 'cal-cell'
+      + (d.getMonth() !== m ? ' other' : '')
+      + (key === today ? ' today' : '')
+      + (key === calSelected ? ' selected' : '')
+      + (s.worst ? ' st-' + s.worst : '');
+    const numCls = 'cal-num' + (s.done ? ' has-done' : '') + (s.pending ? ' has-pending' : '');
+    cell.innerHTML = `<span class="${numCls}">${d.getDate()}</span>`
+      + (s.pending ? `<span class="cal-badge">${s.pending}</span>` : '');
+    if (list.length) cell.title = list.map(t => `${t.completed ? '✓' : '•'} ${t.title}`).join('\n');
+    calGrid.appendChild(cell);
+  }
+
+  renderCalendarDay(byDay);
+}
+
+function renderCalendarDay(byDay) {
+  const key = calSelected;
+  const today = dateKey();
+  const label = new Date(key + 'T00:00:00')
+    .toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+  document.getElementById('cal-day-title').textContent =
+    label.charAt(0).toUpperCase() + label.slice(1) + (key === today ? ' · hoy' : '');
+
+  const list = (byDay.get(key) || []).slice().sort((a, b) =>
+    (a.completed - b.completed) || a.deadline.localeCompare(b.deadline));
+  const s = daySummary(list);
+  document.getElementById('cal-day-summary').textContent = list.length
+    ? `${s.pending} pendiente${s.pending === 1 ? '' : 's'} · ${s.done} completada${s.done === 1 ? '' : 's'}`
+    : '';
+
+  document.getElementById('cal-day-list').innerHTML = list.map(t => {
+    const st = getTimeStatus(t);
+    return `
+      <div class="cal-item st-${st}${t.completed ? ' is-done' : ''}">
+        <button class="cal-check" type="button" data-action="${t.completed ? 'reopen' : 'complete'}" data-id="${t.id}"
+          title="${t.completed ? 'Volver a pendiente' : 'Marcar como completada'}">✓</button>
+        <div class="cal-item-body">
+          <div class="cal-item-title">${escapeHtml(t.title)}</div>
+          <div class="cal-item-meta">⏰ ${t.deadline.slice(11, 16)} · ${t.completed ? 'Completada' : timeLeft(t)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Día sin plazos: avisa cuál es el siguiente plazo pendiente
+  const empty = document.getElementById('cal-day-empty');
+  empty.classList.toggle('hidden', list.length > 0);
+  if (!list.length) {
+    const next = calFilteredTasks()
+      .filter(t => !t.completed && t.deadline.slice(0, 10) > key)
+      .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+    empty.innerHTML = 'Sin plazos para este día.' + (next
+      ? `<br>Próximo plazo: <button type="button" class="cal-next-link" data-day="${next.deadline.slice(0, 10)}">${escapeHtml(next.title)} — ${formatDate(next.deadline)}</button>`
+      : '');
+  }
+
+  // Solo se pueden crear tareas con plazo hoy o en el futuro
+  document.getElementById('cal-day-add').classList.toggle('hidden', key < today);
+}
+
+function calSelectDay(key) {
+  calSelected = key;
+  const d = new Date(key + 'T00:00:00');
+  calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+  renderCalendar();
+}
+
+function calShiftMonth(delta) {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + delta, 1);
+  renderCalendar();
+}
+
+calGrid.addEventListener('click', e => {
+  const cell = e.target.closest('.cal-cell');
+  if (cell) calSelectDay(cell.dataset.day);
+});
+document.getElementById('cal-day-empty').addEventListener('click', e => {
+  const link = e.target.closest('.cal-next-link');
+  if (link) calSelectDay(link.dataset.day);
+});
+document.getElementById('cal-prev').addEventListener('click', () => calShiftMonth(-1));
+document.getElementById('cal-next').addEventListener('click', () => calShiftMonth(1));
+document.getElementById('cal-today').addEventListener('click', () => calSelectDay(dateKey()));
+document.getElementById('cal-day-add').addEventListener('click', () => openModal(null, calSelected));
 
 // ===== Tarea Diaria =====
 // Una tarea principal por día + su avance (slider) + un mensaje motivador

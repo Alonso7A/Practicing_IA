@@ -31,6 +31,45 @@
       </div>
     </section>
 
+    <section class="calendar">
+      <div class="daily-header">
+        <h2>Calendario de plazos</h2>
+        <div class="daily-date-nav">
+          <button id="cal-prev" class="btn-action" type="button" title="Mes anterior">‹</button>
+          <span id="cal-title" class="cal-title">—</span>
+          <button id="cal-next" class="btn-action" type="button" title="Mes siguiente">›</button>
+          <button id="cal-today" class="btn-action cal-today-btn" type="button">Hoy</button>
+        </div>
+      </div>
+
+      <div class="cal-body">
+        <div class="cal-month">
+          <div class="cal-weekdays">
+            <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+          </div>
+          <div id="cal-grid" class="cal-grid"></div>
+          <div class="cal-legend">
+            <span><i class="cal-sw pend st-ok"></i>Plazo pendiente</span>
+            <span><i class="cal-sw pend st-urgent"></i>Por vencer</span>
+            <span><i class="cal-sw pend st-overdue"></i>Vencida</span>
+            <span><i class="cal-sw done"></i>Completada</span>
+            <span><i class="cal-sw done pend st-ok"></i>Completada + pendiente</span>
+            <span><b class="cal-badge-demo">2</b>Nº de pendientes</span>
+          </div>
+        </div>
+
+        <div class="cal-day">
+          <div class="cal-day-head">
+            <h3 id="cal-day-title">—</h3>
+            <span id="cal-day-summary" class="cal-day-summary"></span>
+          </div>
+          <div id="cal-day-list" class="cal-day-list"></div>
+          <div id="cal-day-empty" class="cal-day-empty hidden"></div>
+          <button id="cal-day-add" class="btn btn-ghost btn-small cal-day-add" type="button">+ Tarea con plazo este día</button>
+        </div>
+      </div>
+    </section>
+
     <section class="daily-task">
       <div class="daily-header">
         <h2>
